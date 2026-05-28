@@ -1,9 +1,13 @@
-modules = ["web", "nodejs-20"]
+modules = ["web", "nodejs-20", "python-3.11"]
 [agent]
 expertMode = true
 
 [workflows]
 runButton = "Project"
+
+[[ports]]
+localPort = 5050
+externalPort = 3000
 
 [[ports]]
 localPort = 23636

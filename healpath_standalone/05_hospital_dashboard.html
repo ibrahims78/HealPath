@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HealPath — لوحة تحكم المستشفى</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo',sans-serif}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(0,102,255,0.3);border-radius:3px}button{cursor:pointer}table{border-collapse:collapse}</style>
+</head>
+<body><div id="root"></div>
+<script type="text/babel">
+const {useState}=React;
+const Ic=({c,s=20,children})=>(
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}>{children}</svg>
+);
+const IcBar=({s,c})=><Ic s={s} c={c}><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></Ic>;
+const IcUsers=({s,c})=><Ic s={s} c={c}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Ic>;
+const IcCalendar=({s,c})=><Ic s={s} c={c}><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></Ic>;
+const IcPill=({s,c})=><Ic s={s} c={c}><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></Ic>;
+const IcBriefcase=({s,c})=><Ic s={s} c={c}><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" x2="12" y1="12" y2="16"/><line x1="10" x2="14" y1="14" y2="14"/></Ic>;
+const IcFileText=({s,c})=><Ic s={s} c={c}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></Ic>;
+const IcSettings=({s,c})=><Ic s={s} c={c}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></Ic>;
+const IcLogout=({s,c})=><Ic s={s} c={c}><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></Ic>;
+const IcTrend=({s,c})=><Ic s={s} c={c}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></Ic>;
+const IcPlus=({s,c})=><Ic s={s} c={c}><path d="M5 12h14M12 5v14"/></Ic>;
+const IcClock=({s,c})=><Ic s={s} c={c}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Ic>;
+const IcSearch=({s,c})=><Ic s={s} c={c}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></Ic>;
+const IcMoon=({s,c})=><Ic s={s} c={c}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></Ic>;
+const IcSun=({s,c})=><Ic s={s} c={c}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></Ic>;
+
+const NAV=[
+  {id:"overview",Icon:IcBar,label:"نظرة عامة"},
+  {id:"appointments",Icon:IcCalendar,label:"الحجوزات"},
+  {id:"doctors",Icon:IcUsers,label:"الأطباء"},
+  {id:"pharmacy",Icon:IcPill,label:"الصيدلية"},
+  {id:"recruitment",Icon:IcBriefcase,label:"التوظيف"},
+  {id:"reports",Icon:IcFileText,label:"التقارير"},
+];
+
+const STATS=[
+  {label:"الحجوزات اليوم",value:"47",change:"+12%",up:true,color:"#0066FF",Icon:IcCalendar},
+  {label:"المرضى النشطون",value:"1,284",change:"+5%",up:true,color:"#10B981",Icon:IcUsers},
+  {label:"إيرادات الشهر",value:"4.2M",change:"+8%",up:true,color:"#8B5CF6",Icon:IcTrend},
+  {label:"طلبات الصيدلية",value:"182",change:"-3%",up:false,color:"#F59E0B",Icon:IcPill},
+];
+
+const APTS=[
+  {patient:"أحمد عبدالله",doctor:"د. محمد الأحمد",dept:"العظمية",time:"10:00",status:"confirmed"},
+  {patient:"سارة محمود",doctor:"د. سارة خليل",dept:"القلبية",time:"10:30",status:"waiting"},
+  {patient:"يوسف نجار",doctor:"د. أحمد ياسين",dept:"العصبية",time:"11:00",status:"confirmed"},
+  {patient:"ليلى حسن",doctor:"د. نورة السالم",dept:"الصدرية",time:"11:30",status:"cancelled"},
+  {patient:"عمر الزعبي",doctor:"د. عمر الفاروق",dept:"الكلى",time:"12:00",status:"confirmed"},
+];
+
+const JOBS=[
+  {title:"ممرض/ة طوارئ",dept:"طوارئ",count:3,type:"دوام كامل"},
+  {title:"مختبر طبي",dept:"المختبر",count:1,type:"دوام جزئي"},
+  {title:"صيدلاني",dept:"الصيدلية",count:2,type:"دوام كامل"},
+];
+
+const SC={
+  confirmed:{label:"مؤكد",color:"#059669",bg:"#D1FAE5"},
+  waiting:{label:"انتظار",color:"#D97706",bg:"#FEF3C7"},
+  cancelled:{label:"ملغى",color:"#DC2626",bg:"#FEE2E2"},
+};
+
+function App(){
+  const [dark,setDark]=useState(false);
+  const [activeNav,setActiveNav]=useState("overview");
+
+  const bg=dark?"#0F1621":"#F0F6FF";
+  const card=dark?"#1E2A3A":"#FFFFFF";
+  const text=dark?"#E8F0FE":"#1A1A2E";
+  const text2=dark?"#94A3B8":"#6B7280";
+  const border=dark?"#2A3A4A":"#E5EEFF";
+  const sidebar=dark?"#0D1825":"#1A1A2E";
+
+  return(
+    <div dir="rtl" style={{background:bg,color:text,minHeight:"100vh",fontFamily:"'Cairo',sans-serif"}}>
+      {/* NAV */}
+      <nav style={{background:"#1A1A2E",position:"sticky",top:0,zIndex:50,borderBottom:"1px solid #0A1628"}}>
+        <div style={{padding:"0 24px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:36,height:36,background:"linear-gradient(135deg,#0066FF,#00A3FF)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <svg width="20" height="14" viewBox="0 0 22 16" fill="none"><path d="M1 8 L4 8 L6 3 L8 13 L10 6 L12 10 L14 8 L21 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
+            <div><div style={{color:"white",fontWeight:800,fontSize:17,lineHeight:1}}>HealPath</div><div style={{color:"#60A5FA",fontSize:10}}>لوحة تحكم المستشفى</div></div>
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <div style={{background:"rgba(16,185,129,0.2)",border:"1px solid rgba(16,185,129,0.3)",borderRadius:20,padding:"4px 12px",display:"flex",alignItems:"center",gap:6}}>
+              <div style={{width:7,height:7,background:"#10B981",borderRadius:"50%"}}/>
+              <span style={{color:"#6EE7B7",fontSize:12,fontWeight:600}}>المدير العام</span>
+            </div>
+            <button onClick={()=>setDark(!dark)} style={{width:36,height:36,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              {dark?<IcSun s={16} c="white"/>:<IcMoon s={16} c="white"/>}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div style={{display:"flex"}}>
+        {/* SIDEBAR */}
+        <aside style={{width:240,background:sidebar,flexShrink:0,height:"calc(100vh - 64px)",position:"sticky",top:64,display:"flex",flexDirection:"column"}}>
+          <div style={{padding:"16px 12px",flex:1}}>
+            <div style={{fontSize:11,fontWeight:700,color:"#475569",letterSpacing:"0.08em",padding:"0 12px",marginBottom:8,textTransform:"uppercase"}}>القائمة الرئيسية</div>
+            {NAV.map(({id,Icon,label})=>{
+              const act=activeNav===id;
+              return(
+                <button key={id} onClick={()=>setActiveNav(id)} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"10px 14px",borderRadius:10,border:"none",cursor:"pointer",marginBottom:2,background:act?"rgba(0,102,255,0.2)":"transparent",color:act?"#60A5FA":"#94A3B8",fontFamily:"'Cairo',sans-serif",fontSize:14,fontWeight:act?700:500,textAlign:"right"}}>
+                  <Icon s={18} c={act?"#60A5FA":"#64748B"}/>{label}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{padding:12,borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+            {[{I:IcSettings,l:"الإعدادات"},{I:IcLogout,l:"تسجيل الخروج"}].map(({I,l},i)=>(
+              <button key={i} style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"10px 14px",borderRadius:10,border:"none",cursor:"pointer",marginBottom:2,background:"transparent",color:"#64748B",fontFamily:"'Cairo',sans-serif",fontSize:14,textAlign:"right"}}>
+                <I s={16} c="#64748B"/>{l}
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        {/* CONTENT */}
+        <main style={{flex:1,overflowY:"auto",padding:32}}>
+          {/* TOP BAR */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:28}}>
+            <div>
+              <h1 style={{fontSize:24,fontWeight:800,marginBottom:4}}>لوحة تحكم المستشفى</h1>
+              <p style={{color:text2,fontSize:13}}>{new Date().toLocaleDateString("ar-SA",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</p>
+            </div>
+            <button style={{display:"flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#0066FF,#0052CC)",color:"white",border:"none",padding:"10px 20px",borderRadius:10,fontSize:13,fontWeight:700}}>
+              <IcPlus s={16} c="white"/>إضافة حجز
+            </button>
+          </div>
+
+          {/* STATS */}
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:16,marginBottom:28}}>
+            {STATS.map((s,i)=>(
+              <div key={i} style={{background:card,border:`1px solid ${border}`,borderRadius:16,padding:20,boxShadow:dark?"none":"0 2px 8px rgba(0,0,0,0.06)"}}>
+                <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:14}}>
+                  <div style={{width:44,height:44,background:`${s.color}18`,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <s.Icon s={20} c={s.color}/>
+                  </div>
+                  <span style={{fontSize:12,fontWeight:700,color:s.up?"#059669":"#DC2626",background:s.up?(dark?"rgba(5,150,105,0.15)":"#D1FAE5"):(dark?"rgba(220,38,38,0.15)":"#FEE2E2"),padding:"3px 8px",borderRadius:20}}>
+                    {s.change}
+                  </span>
+                </div>
+                <div style={{fontSize:26,fontWeight:800,marginBottom:4}}>{s.value}</div>
+                <div style={{fontSize:13,color:text2}}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{display:"grid",gridTemplateColumns:"2fr 1fr",gap:20}}>
+            {/* TABLE */}
+            <div style={{background:card,border:`1px solid ${border}`,borderRadius:16,overflow:"hidden",boxShadow:dark?"none":"0 2px 8px rgba(0,0,0,0.06)"}}>
+              <div style={{padding:"18px 20px",borderBottom:`1px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <div style={{fontWeight:800,fontSize:16}}>حجوزات اليوم</div>
+                <div style={{position:"relative"}}>
+                  <IcSearch s={14} c={text2} style={{position:"absolute",top:"50%",transform:"translateY(-50%)",right:10}}/>
+                  <input placeholder="بحث..." style={{background:bg,border:`1px solid ${border}`,borderRadius:8,padding:"7px 30px 7px 10px",fontSize:12,color:text,outline:"none",width:160,fontFamily:"'Cairo',sans-serif"}}/>
+                </div>
+              </div>
+              <table style={{width:"100%"}}>
+                <thead>
+                  <tr style={{background:bg}}>
+                    {["المريض","الطبيب","القسم","الوقت","الحالة"].map((h,i)=>(
+                      <th key={i} style={{padding:"10px 16px",textAlign:"right",fontSize:12,fontWeight:700,color:text2,borderBottom:`1px solid ${border}`}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {APTS.map((apt,i)=>{
+                    const sc=SC[apt.status];
+                    return(
+                      <tr key={i} style={{borderBottom:i<APTS.length-1?`1px solid ${border}`:"none"}}>
+                        <td style={{padding:"12px 16px",fontSize:13,fontWeight:600}}>{apt.patient}</td>
+                        <td style={{padding:"12px 16px",fontSize:13,color:text2}}>{apt.doctor}</td>
+                        <td style={{padding:"12px 16px"}}>
+                          <span style={{background:dark?"rgba(0,102,255,0.15)":"#EFF6FF",color:"#0066FF",fontSize:11,fontWeight:700,padding:"3px 8px",borderRadius:20}}>{apt.dept}</span>
+                        </td>
+                        <td style={{padding:"12px 16px",fontSize:13,color:text2}}>
+                          <span style={{display:"flex",alignItems:"center",gap:4}}><IcClock s={12} c={text2}/>{apt.time}</span>
+                        </td>
+                        <td style={{padding:"12px 16px"}}>
+                          <span style={{background:sc.bg,color:sc.color,fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:20}}>{sc.label}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* JOBS */}
+            <div style={{background:card,border:`1px solid ${border}`,borderRadius:16,overflow:"hidden",boxShadow:dark?"none":"0 2px 8px rgba(0,0,0,0.06)"}}>
+              <div style={{padding:"18px 20px",borderBottom:`1px solid ${border}`,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+                <div style={{fontWeight:800,fontSize:16}}>الوظائف المفتوحة</div>
+                <button style={{background:"linear-gradient(135deg,#0066FF,#0052CC)",color:"white",border:"none",padding:"6px 14px",borderRadius:8,fontSize:12,fontWeight:700,display:"flex",alignItems:"center",gap:6}}>
+                  <IcPlus s={12} c="white"/>إضافة
+                </button>
+              </div>
+              <div style={{padding:16,display:"flex",flexDirection:"column",gap:12}}>
+                {JOBS.map((job,i)=>(
+                  <div key={i} style={{background:bg,border:`1px solid ${border}`,borderRadius:12,padding:14}}>
+                    <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:8}}>
+                      <div style={{fontWeight:700,fontSize:14}}>{job.title}</div>
+                      <span style={{background:dark?"rgba(0,102,255,0.15)":"#EFF6FF",color:"#0066FF",fontSize:11,fontWeight:700,padding:"2px 8px",borderRadius:20}}>{job.count}</span>
+                    </div>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+                      <span style={{fontSize:12,color:text2}}>{job.dept}</span>
+                      <span style={{background:dark?"rgba(16,185,129,0.15)":"#D1FAE5",color:"#059669",fontSize:11,fontWeight:600,padding:"2px 8px",borderRadius:20}}>{job.type}</span>
+                    </div>
+                    <button style={{width:"100%",background:"transparent",border:`1px solid ${border}`,color:text,padding:8,borderRadius:8,fontSize:12,fontWeight:600}}>عرض المتقدمين</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>

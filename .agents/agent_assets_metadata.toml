@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "w-ZovQiV7aAsy29gOilrw"
+uri = "file://healpath_standalone.zip"
+type = "unspecified"
+title = "HealPath — 7 ملفات HTML مستقلة (33KB)"

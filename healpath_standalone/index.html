@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealPath — فهرس الصفحات</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0F1621;font-family:'Cairo',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+  .logo{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .logo-icon{width:52px;height:52px;background:linear-gradient(135deg,#0066FF,#00A3FF);border-radius:14px;display:flex;align-items:center;justify-content:center}
+  .logo-name{color:white;font-size:28px;font-weight:800}
+  .logo-sub{color:#60A5FA;font-size:13px}
+  h1{color:white;font-size:22px;font-weight:700;margin-bottom:8px;text-align:center}
+  p{color:#64748B;font-size:14px;margin-bottom:48px;text-align:center}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:780px;width:100%}
+  .card{background:#1E2A3A;border:1px solid #2A3A4A;border-radius:16px;padding:24px;text-decoration:none;display:flex;flex-direction:column;gap:10px;transition:all 0.25s;cursor:pointer}
+  .card:hover{background:#243447;border-color:#0066FF;transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,102,255,0.2)}
+  .card-num{font-size:12px;color:#475569;font-weight:700;letter-spacing:0.05em}
+  .card-title{color:white;font-size:16px;font-weight:800}
+  .card-desc{color:#64748B;font-size:13px;line-height:1.6}
+  .card-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(0,102,255,0.15);color:#60A5FA;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;width:fit-content}
+  .dot{width:7px;height:7px;background:#10B981;border-radius:50%}
+  footer{margin-top:48px;color:#334155;font-size:13px;text-align:center}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="logo">
+  <div class="logo-icon">
+    <svg width="30" height="22" viewBox="0 0 22 16" fill="none"><path d="M1 8 L4 8 L6 3 L8 13 L10 6 L12 10 L14 8 L21 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div>
+    <div class="logo-name">HealPath</div>
+    <div class="logo-sub">مسار الشفاء</div>
+  </div>
+</div>
+<h1>واجهات تطبيق HealPath</h1>
+<p>اضغط على أي صفحة لعرضها — تعمل مباشرة بدون إنترنت</p>
+<div class="grid">
+  <a href="01_landing.html" class="card">
+    <div class="card-num">01</div>
+    <div class="card-title">الصفحة الرئيسية</div>
+    <div class="card-desc">صفحة هبوط المستشفى مع الأقسام والأطباء والمساعد الذكي</div>
+    <div class="card-tag"><span class="dot"></span>Landing Page</div>
+  </a>
+  <a href="02_patient_dashboard.html" class="card">
+    <div class="card-num">02</div>
+    <div class="card-title">لوحة المريض</div>
+    <div class="card-desc">لوحة تحكم المريض مع المواعيد والاختصارات السريعة</div>
+    <div class="card-tag"><span class="dot"></span>Patient Dashboard</div>
+  </a>
+  <a href="03_doctors.html" class="card">
+    <div class="card-num">03</div>
+    <div class="card-title">الأطباء والحجز</div>
+    <div class="card-desc">تصفح الأطباء وحجز موعد مع نافذة الحجز التفاعلية</div>
+    <div class="card-tag"><span class="dot"></span>Doctors & Booking</div>
+  </a>
+  <a href="04_pharmacy.html" class="card">
+    <div class="card-num">04</div>
+    <div class="card-title">الصيدلية الإلكترونية</div>
+    <div class="card-desc">متجر الأدوية مع سلة المشتريات وخيارات التوصيل</div>
+    <div class="card-tag"><span class="dot"></span>E-Pharmacy</div>
+  </a>
+  <a href="05_hospital_dashboard.html" class="card">
+    <div class="card-num">05</div>
+    <div class="card-title">لوحة تحكم المستشفى</div>
+    <div class="card-desc">إحصائيات وجدول الحجوزات وإدارة الوظائف</div>
+    <div class="card-tag"><span class="dot"></span>Hospital Dashboard</div>
+  </a>
+  <a href="06_ai_assistant.html" class="card">
+    <div class="card-num">06</div>
+    <div class="card-title">المساعد الطبي الذكي</div>
+    <div class="card-desc">تحليل الأعراض وقراءة التحاليل والأشعة بالذكاء الاصطناعي</div>
+    <div class="card-tag"><span class="dot"></span>AI Assistant</div>
+  </a>
+</div>
+<footer>© 2026 HealPath — جميع الحقوق محفوظة</footer>
+</body>
+</html>

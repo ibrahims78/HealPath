@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HealPath — الأطباء والحجز</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo',sans-serif}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(0,102,255,0.3);border-radius:3px}button{cursor:pointer}a{text-decoration:none}</style>
+</head>
+<body><div id="root"></div>
+<script type="text/babel">
+const {useState}=React;
+const Ic=({c,s=20,children})=>(
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c||"currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}>{children}</svg>
+);
+const IcSearch=({s,c})=><Ic s={s} c={c}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></Ic>;
+const IcStar=({s,c,fill})=><Ic s={s} c={c}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill={fill||"none"}/></Ic>;
+const IcCalendar=({s,c})=><Ic s={s} c={c}><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></Ic>;
+const IcClock=({s,c})=><Ic s={s} c={c}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Ic>;
+const IcAward=({s,c})=><Ic s={s} c={c}><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></Ic>;
+const IcCheck=({s,c})=><Ic s={s} c={c}><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></Ic>;
+const IcX=({s,c})=><Ic s={s} c={c}><path d="M18 6 6 18M6 6l12 12"/></Ic>;
+const IcBell=({s,c})=><Ic s={s} c={c}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></Ic>;
+const IcMoon=({s,c})=><Ic s={s} c={c}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></Ic>;
+const IcSun=({s,c})=><Ic s={s} c={c}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></Ic>;
+
+const DOCTORS=[
+  {id:1,name:"د. محمد الأحمد",spec:"استشاري جراحة العظام والمفاصل",dept:"العظمية",exp:"12 سنة",rating:4.8,reviews:124,slots:5,init:"م.أ",bio:"حاصل على البورد الأمريكي في جراحة العظام، متخصص في جراحة المفاصل الصناعية والإصابات الرياضية.",color:"#3B82F6"},
+  {id:2,name:"د. سارة خليل",spec:"أخصائية أمراض القلب والأوعية الدموية",dept:"القلبية",exp:"8 سنوات",rating:4.9,reviews:89,slots:3,init:"س.خ",bio:"خبيرة في تشخيص وعلاج أمراض القلب التاجية واضطرابات النظم القلبي.",color:"#EF4444"},
+  {id:3,name:"د. أحمد ياسين",spec:"استشاري جراحة الدماغ والأعصاب",dept:"العصبية",exp:"15 سنة",rating:4.7,reviews:210,slots:2,init:"أ.ي",bio:"متخصص في الجراحات الميكروسكوبية الدقيقة لأورام الدماغ وجراحات العمود الفقري المتقدمة.",color:"#8B5CF6"},
+  {id:4,name:"د. نورة السالم",spec:"استشارية الأمراض الصدرية والتنفسية",dept:"الصدرية",exp:"10 سنوات",rating:4.6,reviews:156,slots:7,init:"ن.س",bio:"متخصصة في علاج الربو والتليف الرئوي وأمراض الحساسية التنفسية.",color:"#10B981"},
+  {id:5,name:"د. عمر الفاروق",spec:"أخصائي أمراض الكلى وضغط الدم",dept:"الكلى",exp:"14 سنة",rating:4.8,reviews:178,slots:4,init:"ع.ف",bio:"خبير في إدارة حالات القصور الكلوي المزمن وغسيل الكلى.",color:"#F59E0B"},
+  {id:6,name:"د. ريم الحسن",spec:"أخصائية جراحة العظام والعمود الفقري",dept:"العظمية",exp:"6 سنوات",rating:4.5,reviews:64,slots:8,init:"ر.ح",bio:"متخصصة في علاج انحرافات العمود الفقري وآلام الظهر المزمنة.",color:"#3B82F6"},
+];
+const DEPTS=["الكل","العظمية","الصدرية","الكلى","القلبية","العصبية"];
+const DAYS=[{d:"أحد",date:"15",ok:true},{d:"إثنين",date:"16",ok:true},{d:"ثلاثاء",date:"17",ok:false},{d:"أربعاء",date:"18",ok:true},{d:"خميس",date:"19",ok:true},{d:"جمعة",date:"20",ok:false},{d:"سبت",date:"21",ok:false}];
+const TIMES=["09:00","10:00","10:30","13:00","14:30","16:00"];
+
+function App(){
+  const [dark,setDark]=useState(false);
+  const [search,setSearch]=useState("");
+  const [dept,setDept]=useState("الكل");
+  const [selDoc,setSelDoc]=useState(null);
+  const [selDate,setSelDate]=useState("16");
+  const [selTime,setSelTime]=useState("10:30");
+  const [booked,setBooked]=useState(false);
+
+  const bg=dark?"#0F1621":"#F0F6FF";
+  const card=dark?"#1E2A3A":"#FFFFFF";
+  const text=dark?"#E8F0FE":"#1A1A2E";
+  const text2=dark?"#94A3B8":"#6B7280";
+  const border=dark?"#2A3A4A":"#E5EEFF";
+
+  const filtered=DOCTORS.filter(d=>{
+    const ms=d.name.includes(search)||d.spec.includes(search);
+    const md=dept==="الكل"||d.dept===dept;
+    return ms&&md;
+  });
+
+  return(
+    <div dir="rtl" style={{background:bg,color:text,minHeight:"100vh",fontFamily:"'Cairo',sans-serif"}}>
+      {/* NAV */}
+      <nav style={{background:"#1A1A2E",position:"sticky",top:0,zIndex:50,borderBottom:"1px solid #0A1628"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"0 24px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <div style={{width:36,height:36,background:"linear-gradient(135deg,#0066FF,#00A3FF)",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <svg width="20" height="14" viewBox="0 0 22 16" fill="none"><path d="M1 8 L4 8 L6 3 L8 13 L10 6 L12 10 L14 8 L21 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </div>
+            <div><div style={{color:"white",fontWeight:800,fontSize:17,lineHeight:1}}>HealPath</div><div style={{color:"#60A5FA",fontSize:10}}>مسار الشفاء</div></div>
+          </div>
+          <div style={{display:"flex",gap:4}}>
+            {["الرئيسية","الأطباء","الصيدلية","التوظيف","المقالات"].map((l,i)=>(
+              <a key={i} href="#" style={{color:i===1?"#60A5FA":"#CBD5E1",padding:"6px 14px",borderRadius:8,fontSize:14,background:i===1?"rgba(96,165,250,0.12)":"transparent"}}>{l}</a>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button onClick={()=>setDark(!dark)} style={{width:36,height:36,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:8,color:"white",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              {dark?<IcSun s={16} c="white"/>:<IcMoon s={16} c="white"/>}
+            </button>
+            <button style={{background:"transparent",border:"1px solid rgba(255,255,255,0.3)",color:"white",padding:"7px 16px",borderRadius:8,fontSize:13,fontWeight:600}}>تسجيل الدخول</button>
+            <button style={{background:"linear-gradient(135deg,#0066FF,#0052CC)",border:"none",color:"white",padding:"7px 16px",borderRadius:8,fontSize:13,fontWeight:600}}>إنشاء حساب</button>
+          </div>
+        </div>
+      </nav>
+
+      {/* CONTENT */}
+      <main style={{maxWidth:1200,margin:"0 auto",padding:"40px 24px"}}>
+        {/* HEADER */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:32,flexWrap:"wrap",gap:16}}>
+          <div>
+            <h1 style={{fontSize:32,fontWeight:800,marginBottom:6}}>أطباؤنا المتخصصون</h1>
+            <p style={{color:text2,fontSize:14}}>ابحث واحجز موعدك مع نخبة من أفضل الأطباء</p>
+          </div>
+          <div style={{position:"relative"}}>
+            <IcSearch s={16} c={text2} style={{position:"absolute",top:"50%",transform:"translateY(-50%)",right:14}}/>
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="ابحث باسم الطبيب أو التخصص..." style={{background:card,border:`1px solid ${border}`,borderRadius:12,padding:"10px 40px 10px 16px",fontSize:14,color:text,outline:"none",width:320,fontFamily:"'Cairo',sans-serif"}}/>
+          </div>
+        </div>
+
+        {/* FILTER */}
+        <div style={{display:"flex",gap:8,marginBottom:32,flexWrap:"wrap"}}>
+          {DEPTS.map(d=>(
+            <button key={d} onClick={()=>setDept(d)} style={{padding:"8px 18px",borderRadius:24,fontSize:13,fontWeight:600,border:dept===d?"none":`1px solid ${border}`,background:dept===d?"linear-gradient(135deg,#1A1A2E,#0F3460)":"transparent",color:dept===d?"white":text2}}>
+              {d}
+            </button>
+          ))}
+        </div>
+
+        {/* GRID */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:20}}>
+          {filtered.map(doc=>(
+            <div key={doc.id} style={{background:card,border:`1px solid ${border}`,borderRadius:20,overflow:"hidden",boxShadow:dark?"none":"0 2px 12px rgba(0,0,0,0.06)",display:"flex",flexDirection:"column"}}>
+              <div style={{padding:24,flex:1}}>
+                <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:16}}>
+                  <div style={{width:64,height:64,background:`linear-gradient(135deg,${doc.color},${doc.color}99)`,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontWeight:800,fontSize:18}}>{doc.init}</div>
+                  <span style={{background:dark?"rgba(0,102,255,0.15)":"#EFF6FF",color:"#0066FF",fontSize:12,fontWeight:700,padding:"4px 10px",borderRadius:20,display:"flex",alignItems:"center",gap:4}}>
+                    <IcClock s={11} c="#0066FF"/>{doc.slots} مواعيد
+                  </span>
+                </div>
+                <div style={{fontWeight:800,fontSize:16,marginBottom:4}}>{doc.name}</div>
+                <div style={{color:text2,fontSize:13,marginBottom:12}}>{doc.spec}</div>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <span style={{color:"#F59E0B",fontWeight:700,fontSize:13,display:"flex",alignItems:"center",gap:4}}>
+                    <IcStar s={13} c="#F59E0B" fill="#F59E0B"/> {doc.rating} <span style={{color:text2,fontWeight:400}}>({doc.reviews})</span>
+                  </span>
+                  <span style={{color:text2,fontSize:12,display:"flex",alignItems:"center",gap:4}}>
+                    <IcAward s={12} c={text2}/>{doc.exp}
+                  </span>
+                </div>
+              </div>
+              <div style={{padding:"12px 20px",borderTop:`1px solid ${border}`,background:dark?"rgba(255,255,255,0.02)":bg}}>
+                <button onClick={()=>{setSelDoc(doc);setBooked(false);}} style={{width:"100%",background:"linear-gradient(135deg,#0066FF,#0052CC)",color:"white",border:"none",padding:11,borderRadius:12,fontSize:14,fontWeight:700,boxShadow:"0 4px 12px rgba(0,102,255,0.3)"}}>
+                  احجز موعداً
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      {/* BOOKING MODAL */}
+      {selDoc&&(
+        <div style={{position:"fixed",inset:0,zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div onClick={()=>setSelDoc(null)} style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(4px)"}}/>
+          <div style={{position:"relative",background:card,borderRadius:24,width:"100%",maxWidth:620,maxHeight:"90vh",overflowY:"auto",boxShadow:"0 24px 64px rgba(0,0,0,0.4)"}}>
+            {booked?(
+              <div style={{padding:48,textAlign:"center"}}>
+                <div style={{width:80,height:80,background:"linear-gradient(135deg,#10B981,#059669)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px"}}>
+                  <IcCheck s={40} c="white"/>
+                </div>
+                <h2 style={{fontSize:24,fontWeight:800,marginBottom:10}}>تم تأكيد الحجز! ✅</h2>
+                <p style={{color:text2,fontSize:15,marginBottom:8}}>مع {selDoc.name}</p>
+                <p style={{color:text2,fontSize:14,marginBottom:32}}>يوم {selDate} مايو، الساعة {selTime}</p>
+                <div style={{background:bg,border:`1px solid ${border}`,borderRadius:14,padding:"16px 20px",marginBottom:28,textAlign:"right"}}>
+                  <div style={{fontSize:13,color:text2,marginBottom:4}}>رقم الحجز</div>
+                  <div style={{fontSize:20,fontWeight:800,color:"#0066FF"}}>#HP-2026-4871</div>
+                </div>
+                <p style={{fontSize:13,color:text2,marginBottom:24}}>💰 الدفع يتم نقدياً عند الوصول للعيادة</p>
+                <button onClick={()=>setSelDoc(null)} style={{background:"linear-gradient(135deg,#0066FF,#0052CC)",color:"white",border:"none",padding:"14px 40px",borderRadius:12,fontSize:15,fontWeight:700}}>حسناً، شكراً</button>
+              </div>
+            ):(
+              <>
+                <div style={{background:"linear-gradient(135deg,#1A1A2E,#0F3460)",padding:"28px 28px 24px",borderRadius:"24px 24px 0 0",position:"relative"}}>
+                  <button onClick={()=>setSelDoc(null)} style={{position:"absolute",top:16,left:16,background:"rgba(255,255,255,0.15)",border:"none",color:"white",width:32,height:32,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <IcX s={16} c="white"/>
+                  </button>
+                  <div style={{display:"flex",gap:20,alignItems:"center"}}>
+                    <div style={{width:72,height:72,background:`linear-gradient(135deg,${selDoc.color},${selDoc.color}99)`,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontWeight:800,fontSize:22,flexShrink:0}}>{selDoc.init}</div>
+                    <div>
+                      <div style={{color:"white",fontWeight:800,fontSize:22,marginBottom:4}}>{selDoc.name}</div>
+                      <div style={{color:"#93C5FD",fontSize:14,marginBottom:8}}>{selDoc.spec}</div>
+                      <div style={{display:"flex",gap:8}}>
+                        <span style={{background:"rgba(255,255,255,0.15)",color:"white",fontSize:12,padding:"4px 10px",borderRadius:20,display:"flex",alignItems:"center",gap:4}}><IcAward s={11} c="white"/>{selDoc.exp}</span>
+                        <span style={{background:"rgba(255,255,255,0.15)",color:"white",fontSize:12,padding:"4px 10px",borderRadius:20,display:"flex",alignItems:"center",gap:4}}><IcStar s={11} c="white" fill="white"/>{selDoc.rating}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{padding:28}}>
+                  <div style={{background:bg,border:`1px solid ${border}`,borderRadius:14,padding:16,marginBottom:24}}>
+                    <div style={{fontWeight:700,fontSize:14,marginBottom:8}}>نبذة عن الطبيب</div>
+                    <p style={{fontSize:13,color:text2,lineHeight:1.7}}>{selDoc.bio}</p>
+                  </div>
+                  {/* DATE */}
+                  <div style={{marginBottom:24}}>
+                    <div style={{fontWeight:700,fontSize:15,marginBottom:14,display:"flex",alignItems:"center",gap:8}}>
+                      <IcCalendar s={16} c="#0066FF"/>اختر اليوم
+                    </div>
+                    <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:4}}>
+                      {DAYS.map((day,i)=>(
+                        <button key={i} disabled={!day.ok} onClick={()=>day.ok&&setSelDate(day.date)} style={{minWidth:70,height:76,borderRadius:16,cursor:day.ok?"pointer":"not-allowed",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,background:!day.ok?bg:selDate===day.date?"linear-gradient(135deg,#0066FF,#0052CC)":card,opacity:day.ok?1:0.4,border:`1px solid ${selDate===day.date?"transparent":border}`,boxShadow:selDate===day.date?"0 4px 12px rgba(0,102,255,0.4)":"none",flexShrink:0}}>
+                          <span style={{fontSize:11,fontWeight:600,color:selDate===day.date?"white":text2}}>{day.d}</span>
+                          <span style={{fontSize:20,fontWeight:800,color:selDate===day.date?"white":text}}>{day.date}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {/* TIME */}
+                  <div style={{marginBottom:28}}>
+                    <div style={{fontWeight:700,fontSize:15,marginBottom:14,display:"flex",alignItems:"center",gap:8}}>
+                      <IcClock s={16} c="#0066FF"/>اختر الوقت
+                    </div>
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
+                      {TIMES.map((t,i)=>(
+                        <button key={i} onClick={()=>setSelTime(t)} style={{padding:12,borderRadius:12,fontSize:14,fontWeight:600,border:"none",background:selTime===t?"linear-gradient(135deg,#1A1A2E,#0F3460)":bg,color:selTime===t?"white":text,boxShadow:selTime===t?"0 4px 12px rgba(0,0,0,0.2)":"none"}}>
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <button onClick={()=>setBooked(true)} style={{width:"100%",background:"linear-gradient(135deg,#0066FF,#0052CC)",color:"white",border:"none",padding:16,borderRadius:14,fontSize:16,fontWeight:800,boxShadow:"0 6px 20px rgba(0,102,255,0.4)"}}>
+                    تأكيد الحجز — {selDate} مايو، الساعة {selTime}
+                  </button>
+                  <p style={{textAlign:"center",fontSize:12,color:text2,marginTop:10,display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>
+                    <IcCheck s={12} c={text2}/>الدفع يتم في العيادة
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script></body></html>
