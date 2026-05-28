@@ -1,215 +1,105 @@
-import React, { useState } from "react";
-import { 
-  Search, 
-  ShoppingCart, 
-  User, 
-  Menu, 
-  Pill, 
-  Plus, 
-  Minus,
-  X,
-  CreditCard,
-  MapPin,
-  Stethoscope,
-  Activity,
-  Heart,
-  Droplet
-} from "lucide-react";
+import { useState } from "react";
+import { Search, ShoppingCart, Pill, Plus, Minus, X, CreditCard, MapPin } from "lucide-react";
+import { UnifiedNavbar, UnifiedAIFloat, theme, useHealPathStore, type Lang } from "./shared/UnifiedComponents";
 
-const BRAND = {
-  blue: "#0066FF",
-  navy: "#1A1A2E",
-  white: "#FFFFFF",
-  gray: "#F8F9FA",
-  grayDark: "#6C757D"
+const MEDICINES = {
+  ar: [
+    { id:1, name:"باراسيتامول 500mg", sci:"Paracetamol", price:2500, inStock:true, cat:"مسكنات" },
+    { id:2, name:"أموكسيسيلين 250mg", sci:"Amoxicillin", price:4500, inStock:true, cat:"مضادات حيوية" },
+    { id:3, name:"فيتامين C 1000mg", sci:"Ascorbic Acid", price:3500, inStock:false, cat:"فيتامينات" },
+    { id:4, name:"أسبرين 100mg", sci:"Aspirin", price:1500, inStock:true, cat:"قلب وضغط" },
+    { id:5, name:"أملوديبين 5mg", sci:"Amlodipine", price:5500, inStock:true, cat:"قلب وضغط" },
+    { id:6, name:"ميتفورمين 500mg", sci:"Metformin", price:3000, inStock:true, cat:"سكري" },
+  ],
+  en: [
+    { id:1, name:"Paracetamol 500mg", sci:"Paracetamol", price:2500, inStock:true, cat:"Painkillers" },
+    { id:2, name:"Amoxicillin 250mg", sci:"Amoxicillin", price:4500, inStock:true, cat:"Antibiotics" },
+    { id:3, name:"Vitamin C 1000mg", sci:"Ascorbic Acid", price:3500, inStock:false, cat:"Vitamins" },
+    { id:4, name:"Aspirin 100mg", sci:"Aspirin", price:1500, inStock:true, cat:"Cardiology" },
+    { id:5, name:"Amlodipine 5mg", sci:"Amlodipine", price:5500, inStock:true, cat:"Cardiology" },
+    { id:6, name:"Metformin 500mg", sci:"Metformin", price:3000, inStock:true, cat:"Diabetes" },
+  ]
 };
 
-const CATEGORIES = [
-  "الكل",
-  "مسكنات",
-  "مضادات حيوية",
-  "فيتامينات",
-  "قلب وضغط",
-  "سكري"
-];
-
-const MEDICINES = [
-  {
-    id: 1,
-    name: "باراسيتامول 500mg",
-    scientificName: "Paracetamol",
-    price: 2500,
-    inStock: true,
-    category: "مسكنات"
-  },
-  {
-    id: 2,
-    name: "أموكسيسيلين 250mg",
-    scientificName: "Amoxicillin",
-    price: 4500,
-    inStock: true,
-    category: "مضادات حيوية"
-  },
-  {
-    id: 3,
-    name: "فيتامين C 1000mg",
-    scientificName: "Ascorbic Acid",
-    price: 3500,
-    inStock: false,
-    category: "فيتامينات"
-  },
-  {
-    id: 4,
-    name: "أسبرين 100mg",
-    scientificName: "Aspirin",
-    price: 1500,
-    inStock: true,
-    category: "قلب وضغط"
-  },
-  {
-    id: 5,
-    name: "أملوديبين 5mg",
-    scientificName: "Amlodipine",
-    price: 5500,
-    inStock: true,
-    category: "قلب وضغط"
-  },
-  {
-    id: 6,
-    name: "ميتفورمين 500mg",
-    scientificName: "Metformin",
-    price: 3000,
-    inStock: true,
-    category: "سكري"
-  }
-];
+const pillColors = ["#3B82F6","#10B981","#F59E0B","#EF4444","#8B5CF6","#06B6D4"];
 
 export function PharmacyPage() {
-  const [activeTab, setActiveTab] = useState("الكل");
+  const { lang, dark, setLang, setDark, aiOpen, setAiOpen } = useHealPathStore();
+  const colors = dark ? theme.dark : theme.light;
+  const isRtl = lang === "ar";
+  const font = isRtl ? "'Cairo',sans-serif" : "'Inter',sans-serif";
+
+  const [activeTab, setActiveTab] = useState(lang==="ar"?"الكل":"All");
   const [cartOpen, setCartOpen] = useState(true);
-  const [deliveryMethod, setDeliveryMethod] = useState("توصيل للمنزل");
+  const [delivery, setDelivery] = useState(lang==="ar"?"توصيل":"delivery");
+
+  const cats = lang==="ar" ? ["الكل","مسكنات","مضادات حيوية","فيتامينات","قلب وضغط","سكري"] : ["All","Painkillers","Antibiotics","Vitamins","Cardiology","Diabetes"];
+  const meds = MEDICINES[lang];
+
+  const cartItems = [
+    { ...meds[0], qty:2 },
+    { ...meds[1], qty:1 },
+    { ...meds[3], qty:1 },
+  ];
+  const subtotal = cartItems.reduce((s,i) => s+i.price*i.qty, 0);
+  const deliveryFee = delivery==="delivery" ? 1500 : 0;
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50 font-sans text-[#1A1A2E] flex flex-col">
-      {/* TOP NAVBAR */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#0066FF] flex items-center justify-center text-white font-bold text-xl">
-              H
-            </div>
-            <span className="text-[#1A1A2E] font-bold text-xl tracking-tight">HealPath</span>
-          </div>
+    <div dir={isRtl?"rtl":"ltr"} style={{ background:colors.bgSecondary, color:colors.text, minHeight:"100vh", fontFamily:font }}>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+      <UnifiedNavbar lang={lang} dark={dark} setLang={setLang} setDark={setDark} activePage="pharmacy" />
 
-          <nav className="hidden md:flex gap-6 items-center">
-            <a href="#" className="text-gray-600 hover:text-[#0066FF] font-medium transition-colors">الرئيسية</a>
-            <a href="#" className="text-[#0066FF] font-bold transition-colors">الصيدلية</a>
-            <a href="#" className="text-gray-600 hover:text-[#0066FF] font-medium transition-colors">استشارات</a>
-            <a href="#" className="text-gray-600 hover:text-[#0066FF] font-medium transition-colors">مواعيدي</a>
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setCartOpen(!cartOpen)}
-              className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              <span className="absolute top-0 right-0 w-4 h-4 bg-[#0066FF] text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
-                3
-              </span>
-            </button>
-            <div className="w-9 h-9 rounded-full bg-gray-200 border-2 border-white shadow-sm overflow-hidden flex items-center justify-center">
-              <User className="w-5 h-5 text-gray-500" />
-            </div>
-            <button className="md:hidden p-2 text-gray-600">
-              <Menu className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className="flex-1 flex overflow-hidden">
-        {/* MAIN CONTENT */}
-        <main className={`flex-1 overflow-y-auto transition-all duration-300 ${cartOpen ? 'mr-[320px]' : ''}`}>
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* PAGE HEADER */}
-            <div className="mb-8 bg-gradient-to-l from-[#1A1A2E] to-[#2A2A4A] rounded-2xl p-8 text-white relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
-              
-              <div className="relative z-10 max-w-2xl">
-                <h1 className="text-3xl font-bold mb-2">الصيدلية الإلكترونية</h1>
-                <p className="text-blue-100 text-lg mb-8">اطلب دواءك بسهولة وأمان، توصيل سريع لجميع المناطق.</p>
-                
-                <div className="relative flex items-center">
-                  <input 
-                    type="text" 
-                    placeholder="ابحث عن دواء أو مستحضر..." 
-                    className="w-full h-14 pl-4 pr-12 rounded-xl border-none shadow-lg text-[#1A1A2E] text-lg focus:ring-2 focus:ring-[#0066FF] outline-none"
-                  />
-                  <Search className="absolute right-4 w-6 h-6 text-gray-400" />
-                  <button className="absolute left-2 h-10 px-6 bg-[#0066FF] text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
-                    بحث
-                  </button>
+      <div style={{ display:"flex", position:"relative" }}>
+        {/* Main */}
+        <main style={{ flex:1, marginInlineEnd: cartOpen?320:0, transition:"margin 0.3s", minHeight:"calc(100vh - 64px)", overflowY:"auto" }}>
+          <div style={{ maxWidth:900, margin:"0 auto", padding:"32px 24px" }}>
+            {/* Hero banner */}
+            <div style={{ background:"linear-gradient(135deg,#1A1A2E,#0F3460)", borderRadius:20, padding:"32px 28px", marginBottom:28, position:"relative", overflow:"hidden" }}>
+              <div style={{ position:"absolute", inset:0, backgroundImage:"radial-gradient(rgba(0,102,255,0.15) 1px,transparent 1px)", backgroundSize:"20px 20px", pointerEvents:"none" }} />
+              <h1 style={{ color:"white", fontSize:26, fontWeight:800, marginBottom:8, position:"relative" }}>{lang==="ar"?"الصيدلية الإلكترونية":"E-Pharmacy"}</h1>
+              <p style={{ color:"#93C5FD", fontSize:15, marginBottom:24, position:"relative" }}>{lang==="ar"?"اطلب دواءك بسهولة وأمان — توصيل سريع لجميع المناطق":"Order your medicine safely — fast delivery everywhere"}</p>
+              <div style={{ position:"relative", display:"flex", alignItems:"center", gap:8 }}>
+                <div style={{ flex:1, position:"relative" }}>
+                  <Search size={18} color="#9CA3AF" style={{ position:"absolute", top:"50%", transform:"translateY(-50%)", ...(isRtl?{right:14}:{left:14}) }} />
+                  <input placeholder={lang==="ar"?"ابحث عن دواء...":"Search for medicine..."} style={{ width:"100%", height:48, background:"white", border:"none", borderRadius:12, padding: isRtl?"0 44px 0 16px":"0 16px 0 44px", fontSize:14, color:"#1A1A2E", outline:"none", boxSizing:"border-box", fontFamily:font }} />
                 </div>
+                <button style={{ height:48, padding:"0 24px", background:"linear-gradient(135deg,#0066FF,#0052CC)", color:"white", border:"none", borderRadius:12, fontSize:14, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", fontFamily:font }}>
+                  {lang==="ar"?"بحث":"Search"}
+                </button>
               </div>
             </div>
 
-            {/* CATEGORY TABS */}
-            <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-              {CATEGORIES.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveTab(cat)}
-                  className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
-                    activeTab === cat 
-                      ? 'bg-[#0066FF] text-white shadow-md' 
-                      : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-                  }`}
-                >
-                  {cat}
+            {/* Category Tabs */}
+            <div style={{ display:"flex", gap:8, marginBottom:24, flexWrap:"wrap" }}>
+              {cats.map(c => (
+                <button key={c} onClick={() => setActiveTab(c)} style={{ padding:"7px 18px", borderRadius:24, fontSize:13, fontWeight:600, cursor:"pointer", background: activeTab===c?"linear-gradient(135deg,#0066FF,#0052CC)":colors.card, color: activeTab===c?"white":colors.textSecondary, boxShadow: activeTab===c?"0 4px 12px rgba(0,102,255,0.3)":"none", fontFamily:font, border:`1px solid ${activeTab===c?"transparent":colors.border}` }}>
+                  {c}
                 </button>
               ))}
             </div>
 
-            {/* PRODUCTS GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {MEDICINES.map((med) => (
-                <div key={med.id} className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden group flex flex-col">
-                  {/* Image Area */}
-                  <div className="h-48 bg-gradient-to-br from-blue-50 to-[#f0f5ff] flex items-center justify-center p-6 relative">
-                    <div className="absolute top-3 right-3 flex flex-col gap-1">
-                      {med.inStock ? (
-                        <span className="px-2.5 py-1 text-[10px] font-bold bg-green-100 text-green-700 rounded-md">متوفر</span>
-                      ) : (
-                        <span className="px-2.5 py-1 text-[10px] font-bold bg-red-100 text-red-700 rounded-md">نفد المخزون</span>
-                      )}
+            {/* Products Grid */}
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+              {meds.map((med,i) => (
+                <div key={med.id} style={{ background:colors.card, border:`1px solid ${colors.border}`, borderRadius:16, overflow:"hidden", boxShadow: dark?"none":"0 2px 8px rgba(0,0,0,0.06)" }}>
+                  {/* Image area */}
+                  <div style={{ height:140, background: dark?colors.bgSecondary:`linear-gradient(135deg,${pillColors[i]}18,${pillColors[i]}08)`, display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
+                    <div style={{ position:"absolute", top:10, ...(isRtl?{right:10}:{left:10}) }}>
+                      <span style={{ background: med.inStock?"#D1FAE5":"#FEE2E2", color: med.inStock?"#059669":"#DC2626", fontSize:11, fontWeight:700, padding:"4px 8px", borderRadius:8 }}>
+                        {med.inStock ? (lang==="ar"?"متوفر":"In Stock") : (lang==="ar"?"نفد المخزون":"Out of Stock")}
+                      </span>
                     </div>
-                    <div className="w-24 h-24 bg-white rounded-full shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
-                      <Pill className="w-10 h-10 text-[#0066FF] opacity-80" />
+                    <div style={{ width:72, height:72, background: dark?"rgba(255,255,255,0.08)":"white", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 12px rgba(0,0,0,0.1)" }}>
+                      <Pill size={32} color={pillColors[i]} />
                     </div>
                   </div>
-                  
-                  {/* Content Area */}
-                  <div className="p-5 flex-1 flex flex-col">
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg text-[#1A1A2E] mb-1">{med.name}</h3>
-                      <p className="text-sm text-gray-500 mb-4">{med.scientificName}</p>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
-                      <span className="font-bold text-lg text-[#0066FF]">
-                        {med.price.toLocaleString('ar-SY')} ل.س
-                      </span>
-                      <button 
-                        disabled={!med.inStock}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-                          med.inStock 
-                            ? 'bg-[#1A1A2E] text-white hover:bg-[#2A2A4A]' 
-                            : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        }`}
-                      >
-                        <ShoppingCart className="w-4 h-4" />
-                        أضف للسلة
+                  <div style={{ padding:16 }}>
+                    <div style={{ fontWeight:700, fontSize:15, color:colors.text, marginBottom:2 }}>{med.name}</div>
+                    <div style={{ fontSize:12, color:colors.textSecondary, marginBottom:14, fontStyle:"italic" }}>{med.sci}</div>
+                    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                      <span style={{ fontWeight:800, fontSize:16, color:"#0066FF" }}>{med.price.toLocaleString()} {lang==="ar"?"ل.س":"SYP"}</span>
+                      <button disabled={!med.inStock} style={{ display:"flex", alignItems:"center", gap:6, padding:"7px 14px", background: med.inStock?"linear-gradient(135deg,#1A1A2E,#0F3460)":"#F3F4F6", color: med.inStock?"white":"#9CA3AF", border:"none", borderRadius:10, fontSize:13, fontWeight:700, cursor: med.inStock?"pointer":"not-allowed", fontFamily:font }}>
+                        <ShoppingCart size={14}/>{lang==="ar"?"أضف":"Add"}
                       </button>
                     </div>
                   </div>
@@ -219,112 +109,87 @@ export function PharmacyPage() {
           </div>
         </main>
 
-        {/* CART SIDEBAR */}
-        <aside className={`fixed top-16 right-0 bottom-0 w-[320px] bg-white border-l border-gray-200 shadow-2xl flex flex-col transition-transform duration-300 z-20 ${
-          cartOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}>
-          <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <h2 className="font-bold text-lg flex items-center gap-2 text-[#1A1A2E]">
-              <ShoppingCart className="w-5 h-5 text-[#0066FF]" />
-              سلة الطلبات
-            </h2>
-            <button 
-              onClick={() => setCartOpen(false)}
-              className="p-1.5 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        {/* Cart Sidebar */}
+        <aside style={{ position:"fixed", top:64, ...(isRtl?{left:0}:{right:0}), bottom:0, width:320, background:colors.card, borderInlineStart:`1px solid ${colors.border}`, display:"flex", flexDirection:"column", transform: cartOpen?"translateX(0)":(isRtl?"translateX(-100%)":"translateX(100%)"), transition:"transform 0.3s", zIndex:30, boxShadow: dark?"none":"-4px 0 20px rgba(0,0,0,0.08)" }}>
+          {/* Cart Header */}
+          <div style={{ padding:"16px 20px", borderBottom:`1px solid ${colors.border}`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, fontWeight:800, fontSize:16, color:colors.text }}>
+              <ShoppingCart size={18} color="#0066FF"/>
+              {lang==="ar"?"سلة الطلبات":"Cart"}
+              <span style={{ background:"#0066FF", color:"white", width:20, height:20, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:800 }}>3</span>
+            </div>
+            <button onClick={() => setCartOpen(false)} style={{ background:"none", border:"none", color:colors.textSecondary, cursor:"pointer" }}><X size={18}/></button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-            {/* Cart Items */}
-            {[
-              { id: 1, name: "باراسيتامول 500mg", price: 2500, qty: 2 },
-              { id: 2, name: "أموكسيسيلين 250mg", price: 4500, qty: 1 },
-              { id: 4, name: "أسبرين 100mg", price: 1500, qty: 1 }
-            ].map(item => (
-              <div key={item.id} className="flex gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center border border-gray-100 flex-shrink-0">
-                  <Pill className="w-6 h-6 text-[#0066FF] opacity-60" />
+          {/* Cart Items */}
+          <div style={{ flex:1, overflowY:"auto", padding:16, display:"flex", flexDirection:"column", gap:12 }}>
+            {cartItems.map(item => (
+              <div key={item.id} style={{ display:"flex", gap:12, background:colors.bgSecondary, borderRadius:14, padding:12, border:`1px solid ${colors.border}` }}>
+                <div style={{ width:44, height:44, background:colors.card, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, border:`1px solid ${colors.border}` }}>
+                  <Pill size={20} color="#0066FF" />
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-sm text-[#1A1A2E] mb-1 leading-tight">{item.name}</h4>
-                  <div className="text-[#0066FF] font-bold text-sm mb-2">{item.price.toLocaleString('ar-SY')} ل.س</div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-md px-2 py-1">
-                      <button className="text-gray-400 hover:text-[#1A1A2E]"><Minus className="w-3 h-3" /></button>
-                      <span className="text-xs font-medium w-4 text-center">{item.qty}</span>
-                      <button className="text-gray-400 hover:text-[#1A1A2E]"><Plus className="w-3 h-3" /></button>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontWeight:700, fontSize:13, color:colors.text, marginBottom:2, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{item.name}</div>
+                  <div style={{ color:"#0066FF", fontWeight:700, fontSize:13, marginBottom:8 }}>{item.price.toLocaleString()} {lang==="ar"?"ل.س":"SYP"}</div>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, background:colors.card, border:`1px solid ${colors.border}`, borderRadius:8, padding:"4px 8px" }}>
+                      <button style={{ background:"none", border:"none", color:colors.textSecondary, cursor:"pointer", lineHeight:1 }}><Minus size={12}/></button>
+                      <span style={{ fontWeight:700, fontSize:13, color:colors.text, width:16, textAlign:"center" }}>{item.qty}</span>
+                      <button style={{ background:"none", border:"none", color:colors.textSecondary, cursor:"pointer", lineHeight:1 }}><Plus size={12}/></button>
                     </div>
-                    <button className="text-red-400 hover:text-red-600 text-xs font-medium">حذف</button>
+                    <button style={{ background:"none", border:"none", color:"#EF4444", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:font }}>{lang==="ar"?"حذف":"Remove"}</button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="p-4 border-t border-gray-100 bg-gray-50/50">
-            {/* Delivery Options */}
-            <div className="mb-6">
-              <h4 className="font-semibold text-sm mb-3 text-gray-700">طريقة الاستلام</h4>
-              <div className="space-y-2">
-                <label className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${
-                  deliveryMethod === "توصيل للمنزل" ? 'border-[#0066FF] bg-blue-50/30' : 'border-gray-200 bg-white hover:bg-gray-50'
-                }`}>
-                  <input 
-                    type="radio" 
-                    name="delivery" 
-                    className="w-4 h-4 text-[#0066FF] border-gray-300 focus:ring-[#0066FF]"
-                    checked={deliveryMethod === "توصيل للمنزل"}
-                    onChange={() => setDeliveryMethod("توصيل للمنزل")}
-                  />
-                  <div className="mr-3 flex-1 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm font-medium">توصيل للمنزل</span>
-                  </div>
+          {/* Cart Footer */}
+          <div style={{ padding:16, borderTop:`1px solid ${colors.border}`, background:colors.bgSecondary }}>
+            {/* Delivery options */}
+            <div style={{ marginBottom:16 }}>
+              <div style={{ fontWeight:700, fontSize:13, color:colors.text, marginBottom:10 }}>{lang==="ar"?"طريقة الاستلام":"Delivery Method"}</div>
+              {["delivery","pickup"].map(opt => (
+                <label key={opt} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", borderRadius:10, marginBottom:6, border:`1px solid ${delivery===opt?"#0066FF":colors.border}`, background: delivery===opt?(dark?"rgba(0,102,255,0.1)":"#EFF6FF"):colors.card, cursor:"pointer" }}>
+                  <input type="radio" name="del" checked={delivery===opt} onChange={() => setDelivery(opt)} style={{ accentColor:"#0066FF" }} />
+                  <MapPin size={14} color={delivery===opt?"#0066FF":colors.textSecondary} />
+                  <span style={{ fontSize:13, fontWeight:600, color: delivery===opt?"#0066FF":colors.text, fontFamily:font }}>
+                    {opt==="delivery" ? (lang==="ar"?"توصيل للمنزل":"Home Delivery") : (lang==="ar"?"استلام من الصيدلية":"Pickup")}
+                  </span>
                 </label>
-                <label className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${
-                  deliveryMethod === "استلام من الصيدلية" ? 'border-[#0066FF] bg-blue-50/30' : 'border-gray-200 bg-white hover:bg-gray-50'
-                }`}>
-                  <input 
-                    type="radio" 
-                    name="delivery" 
-                    className="w-4 h-4 text-[#0066FF] border-gray-300 focus:ring-[#0066FF]"
-                    checked={deliveryMethod === "استلام من الصيدلية"}
-                    onChange={() => setDeliveryMethod("استلام من الصيدلية")}
-                  />
-                  <div className="mr-3 flex-1 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm font-medium">استلام من الصيدلية</span>
-                  </div>
-                </label>
-              </div>
+              ))}
             </div>
-
             {/* Summary */}
-            <div className="space-y-2 mb-4 text-sm">
-              <div className="flex justify-between text-gray-600">
-                <span>المجموع الفرعي</span>
-                <span className="font-medium">11,000 ل.س</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>رسوم التوصيل</span>
-                <span className="font-medium">{deliveryMethod === "توصيل للمنزل" ? "1,500 ل.س" : "مجاناً"}</span>
-              </div>
-              <div className="pt-2 border-t border-gray-200 flex justify-between font-bold text-lg text-[#1A1A2E]">
-                <span>الإجمالي</span>
-                <span className="text-[#0066FF]">{deliveryMethod === "توصيل للمنزل" ? "12,500 ل.س" : "11,000 ل.س"}</span>
+            <div style={{ marginBottom:16 }}>
+              {[
+                [lang==="ar"?"المجموع الفرعي":"Subtotal", `${subtotal.toLocaleString()} ${lang==="ar"?"ل.س":"SYP"}`],
+                [lang==="ar"?"التوصيل":"Delivery", delivery==="delivery"?`1,500 ${lang==="ar"?"ل.س":"SYP"}`:(lang==="ar"?"مجاناً":"Free")],
+              ].map(([k,v],i) => (
+                <div key={i} style={{ display:"flex", justifyContent:"space-between", marginBottom:8, fontSize:13, color:colors.textSecondary }}>
+                  <span>{k}</span><span style={{ fontWeight:600 }}>{v}</span>
+                </div>
+              ))}
+              <div style={{ display:"flex", justifyContent:"space-between", paddingTop:10, borderTop:`1px solid ${colors.border}`, fontSize:16, fontWeight:800 }}>
+                <span style={{ color:colors.text }}>{lang==="ar"?"الإجمالي":"Total"}</span>
+                <span style={{ color:"#0066FF" }}>{(subtotal+deliveryFee).toLocaleString()} {lang==="ar"?"ل.س":"SYP"}</span>
               </div>
             </div>
-
-            <button className="w-full bg-[#0066FF] hover:bg-blue-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2">
-              <CreditCard className="w-5 h-5" />
-              إتمام الطلب
+            <button style={{ width:"100%", background:"linear-gradient(135deg,#0066FF,#0052CC)", color:"white", border:"none", padding:"14px", borderRadius:14, fontSize:15, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, boxShadow:"0 6px 20px rgba(0,102,255,0.35)", fontFamily:font }}>
+              <CreditCard size={16}/>{lang==="ar"?"إتمام الطلب":"Place Order"}
             </button>
           </div>
         </aside>
+
+        {/* Cart toggle button */}
+        {!cartOpen && (
+          <button onClick={() => setCartOpen(true)} style={{ position:"fixed", bottom:100, ...(isRtl?{left:24}:{right:24}), width:54, height:54, background:"linear-gradient(135deg,#0066FF,#0052CC)", border:"none", borderRadius:"50%", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 20px rgba(0,102,255,0.4)", zIndex:98 }}>
+            <ShoppingCart size={22} color="white"/>
+            <span style={{ position:"absolute", top:-2, ...(isRtl?{left:-2}:{right:-2}), width:20, height:20, background:"#EF4444", borderRadius:"50%", fontSize:11, fontWeight:800, color:"white", display:"flex", alignItems:"center", justifyContent:"center" }}>3</span>
+          </button>
+        )}
       </div>
+
+      <UnifiedAIFloat lang={lang} dark={dark} aiOpen={aiOpen} setAiOpen={setAiOpen} colors={colors} />
     </div>
   );
 }

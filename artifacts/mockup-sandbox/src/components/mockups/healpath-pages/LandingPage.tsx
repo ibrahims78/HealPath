@@ -1,109 +1,96 @@
-import React from "react";
-import { Bone, Wind, Droplets, Heart, Brain, Activity, Search, FileText } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Moon, Sun, Globe, Bell, Brain, Activity, Bone, Wind, Droplets, Heart, Calendar, Pill, FileText, X, Award, CheckCircle } from "lucide-react";
+import { UnifiedNavbar, UnifiedAIFloat, theme, useHealPathStore, type Lang } from "./shared/UnifiedComponents";
 
 export function LandingPage() {
+  const { lang, dark, setLang, setDark, aiOpen, setAiOpen } = useHealPathStore();
+  const t = theme.translations[lang];
+  const colors = dark ? theme.dark : theme.light;
+
+  const deptIcons = [Bone, Wind, Droplets, Heart, Brain];
+  const deptColors = ["#3B82F6","#10B981","#8B5CF6","#EF4444","#F59E0B"];
+
   return (
-    <div dir="rtl" style={{ direction: "rtl", fontFamily: "system-ui, sans-serif" }} className="min-h-screen flex flex-col w-full overflow-x-hidden text-slate-900 bg-white">
-      {/* NAVBAR */}
-      <header style={{ backgroundColor: "#1A1A2E" }} className="w-full fixed top-0 z-50 py-4 px-6 md:px-12 flex items-center justify-between shadow-md">
-        <div className="flex items-center gap-8">
-          <div style={{ color: "#0066FF" }} className="text-2xl font-bold tracking-tight">
-            HealPath
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-white hover:text-blue-400 transition-colors">الرئيسية</a>
-            <a href="#" className="text-white hover:text-blue-400 transition-colors">الأطباء</a>
-            <a href="#" className="text-white hover:text-blue-400 transition-colors">الصيدلية</a>
-            <a href="#" className="text-white hover:text-blue-400 transition-colors">التوظيف</a>
-          </nav>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="text-white border-white hover:bg-white hover:text-[#1A1A2E] bg-transparent">دخول</Button>
-          <Button style={{ backgroundColor: "#0066FF", color: "#ffffff" }} className="hover:bg-blue-600 border-none">تسجيل</Button>
-        </div>
-      </header>
+    <div dir={lang === "ar" ? "rtl" : "ltr"} style={{ background: colors.bg, color: colors.text, minHeight: "100vh", fontFamily: lang === "ar" ? "'Cairo',sans-serif" : "'Inter',sans-serif", transition: "all 0.3s" }}>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+      
+      <UnifiedNavbar lang={lang} dark={dark} setLang={setLang} setDark={setDark} activePage="home" />
 
       {/* HERO */}
-      <section style={{ backgroundColor: "#1A1A2E" }} className="pt-32 pb-20 px-6 md:px-12 flex flex-col items-center justify-center text-center min-h-[80vh]">
-        <div className="max-w-3xl space-y-6">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
-            مسار شفائك يبدأ هنا
-          </h1>
-          <p className="text-lg md:text-xl text-slate-400">
-            منصة طبية ذكية تجمع حجز المواعيد والذكاء الاصطناعي في مكان واحد
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button size="lg" style={{ backgroundColor: "#0066FF", color: "#ffffff" }} className="w-full sm:w-auto hover:bg-blue-600 text-lg px-8">
-              احجز موعداً الآن
-            </Button>
-            <Button size="lg" variant="outline" className="w-full sm:w-auto text-white border-white hover:bg-white hover:text-[#1A1A2E] text-lg px-8 bg-transparent">
-              جرّب المساعد الذكي
-            </Button>
-          </div>
+      <section style={{ background: dark ? "linear-gradient(135deg,#0D1825,#0F1E35)" : "linear-gradient(135deg,#1A1A2E,#0F3460)", padding: "88px 24px 64px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(0,102,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,102,255,0.05) 1px,transparent 1px)", backgroundSize:"40px 40px", pointerEvents:"none" }} />
+        <div style={{ display:"inline-flex", alignItems:"center", gap:8, background:"rgba(0,102,255,0.15)", border:"1px solid rgba(0,102,255,0.3)", borderRadius:20, padding:"6px 16px", marginBottom:24 }}>
+          <Activity size={14} color="#60A5FA" />
+          <span style={{ color:"#60A5FA", fontSize:13, fontWeight:600 }}>{lang==="ar" ? "مدعوم بالذكاء الاصطناعي" : "AI-Powered Healthcare"}</span>
         </div>
-
-        {/* Stat Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 max-w-4xl w-full">
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl text-center border border-white/20">
-            <div style={{ color: "#0066FF" }} className="text-4xl font-bold mb-2">500+</div>
-            <div className="text-white font-medium">مريض مسجل</div>
-          </div>
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl text-center border border-white/20">
-            <div style={{ color: "#0066FF" }} className="text-4xl font-bold mb-2">5</div>
-            <div className="text-white font-medium">أقسام طبية</div>
-          </div>
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl text-center border border-white/20">
-            <div style={{ color: "#0066FF" }} className="text-4xl font-bold mb-2">+20</div>
-            <div className="text-white font-medium">طبيب متخصص</div>
-          </div>
+        <h1 style={{ color:"white", fontSize:52, fontWeight:800, marginBottom:20, lineHeight:1.2, position:"relative" }}>
+          {lang==="ar" ? "مسار شفائك يبدأ هنا" : "Your Healing Path Starts Here"}
+        </h1>
+        <p style={{ color:"#94A3B8", fontSize:18, maxWidth:600, margin:"0 auto 36px", lineHeight:1.8 }}>
+          {lang==="ar" ? "منصة طبية ذكية تجمع حجز المواعيد والذكاء الاصطناعي في مكان واحد" : "A smart medical platform combining appointment booking and AI in one place"}
+        </p>
+        <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
+          <button style={{ background:"linear-gradient(135deg,#0066FF,#0052CC)", color:"white", border:"none", padding:"14px 32px", borderRadius:12, fontSize:16, fontWeight:700, cursor:"pointer", boxShadow:"0 4px 20px rgba(0,102,255,0.4)", display:"flex", alignItems:"center", gap:8 }}>
+            <Calendar size={18} />{lang==="ar" ? "احجز موعداً الآن" : "Book Appointment"}
+          </button>
+          <button style={{ background:"transparent", color:"white", border:"2px solid rgba(255,255,255,0.3)", padding:"14px 32px", borderRadius:12, fontSize:16, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:8 }}>
+            <Brain size={18} />{lang==="ar" ? "جرّب المساعد الذكي" : "Try AI Assistant"}
+          </button>
+        </div>
+        <div style={{ display:"flex", gap:16, justifyContent:"center", marginTop:48, flexWrap:"wrap" }}>
+          {["500+","5","20+"].map((v,i) => (
+            <div key={i} style={{ background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:16, padding:"16px 28px", textAlign:"center" }}>
+              <div style={{ color:"#60A5FA", fontSize:28, fontWeight:800 }}>{v}</div>
+              <div style={{ color:"#94A3B8", fontSize:13, marginTop:4 }}>{lang==="ar" ? ["مريض مسجل","قسم طبي","طبيب متخصص"][i] : ["Registered Patients","Medical Depts","Specialist Doctors"][i]}</div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* DEPARTMENTS */}
-      <section className="py-20 px-6 md:px-12 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12" style={{ color: "#1A1A2E" }}>أقسامنا الطبية</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-            {[
-              { name: "العظمية", icon: Bone, desc: "علاج وجراحة العظام والمفاصل" },
-              { name: "الصدرية", icon: Wind, desc: "أمراض الجهاز التنفسي والربو" },
-              { name: "الكلى", icon: Droplets, desc: "أمراض الكلى والمسالك البولية" },
-              { name: "القلبية", icon: Heart, desc: "أمراض القلب والأوعية الدموية" },
-              { name: "العصبية", icon: Brain, desc: "أمراض الدماغ والجهاز العصبي" },
-            ].map((dept, i) => (
-              <div key={i} className="bg-slate-50 border border-slate-100 rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg transition-shadow cursor-pointer">
-                <div style={{ backgroundColor: "#0066FF" }} className="w-16 h-16 rounded-full flex items-center justify-center mb-4 text-white">
-                  <dept.icon size={28} />
+      <section style={{ background: colors.bgSecondary, padding:"64px 24px" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto" }}>
+          <h2 style={{ textAlign:"center", fontSize:32, fontWeight:800, marginBottom:8, color:colors.text }}>{lang==="ar" ? "أقسامنا الطبية" : "Our Medical Departments"}</h2>
+          <div style={{ width:48, height:4, background:"linear-gradient(90deg,#0066FF,#00A3FF)", borderRadius:2, margin:"0 auto 40px" }} />
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:16 }}>
+            {(lang==="ar" ? ["العظمية","الصدرية","الكلى","القلبية","العصبية"] : ["Orthopedics","Pulmonology","Nephrology","Cardiology","Neurology"]).map((name,i) => {
+              const Icon = deptIcons[i];
+              return (
+                <div key={i} style={{ background:colors.card, border:`1px solid ${colors.border}`, borderRadius:16, padding:"24px 16px", textAlign:"center", cursor:"pointer", boxShadow: dark ? "none" : "0 2px 12px rgba(0,0,0,0.06)" }}>
+                  <div style={{ width:56, height:56, background:`${deptColors[i]}18`, borderRadius:16, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 14px" }}>
+                    <Icon size={26} color={deptColors[i]} />
+                  </div>
+                  <div style={{ fontWeight:700, fontSize:15, color:colors.text, marginBottom:6 }}>{name}</div>
+                  <div style={{ fontSize:12, color:colors.textSecondary, lineHeight:1.5 }}>{(lang==="ar" ? ["أمراض وجراحات العظام","أمراض الجهاز التنفسي","أمراض الكلى والمسالك","أمراض القلب والأوعية","أمراض الجهاز العصبي"] : ["Bones & joints surgery","Lungs & respiratory","Kidney & urinary tract","Heart & vascular","Nervous system"])[i]}</div>
                 </div>
-                <h3 className="font-bold text-lg mb-2" style={{ color: "#1A1A2E" }}>{dept.name}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{dept.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* DOCTORS */}
-      <section className="py-20 px-6 md:px-12 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12" style={{ color: "#1A1A2E" }}>نخبة من الأطباء المتخصصين</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section style={{ background:colors.bg, padding:"64px 24px" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto" }}>
+          <h2 style={{ textAlign:"center", fontSize:32, fontWeight:800, marginBottom:8, color:colors.text }}>{lang==="ar" ? "نخبة من الأطباء المتخصصين" : "Our Specialist Doctors"}</h2>
+          <div style={{ width:48, height:4, background:"linear-gradient(90deg,#0066FF,#00A3FF)", borderRadius:2, margin:"0 auto 40px" }} />
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:24 }}>
             {[
-              { name: "د. أحمد خليل", spec: "أخصائي الجراحة القلبية", exp: "15 سنة خبرة", init: "أخ" },
-              { name: "د. سارة محمود", spec: "استشارية الأمراض العصبية", exp: "12 سنة خبرة", init: "سم" },
-              { name: "د. يوسف النجار", spec: "أخصائي جراحة العظام", exp: "10 سنوات خبرة", init: "ين" },
-            ].map((doc, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col items-center text-center">
-                <div style={{ backgroundColor: "#0066FF" }} className="w-24 h-24 rounded-full flex items-center justify-center text-3xl text-white font-bold mb-4">
-                  {doc.init}
+              {name:lang==="ar"?"د. محمد الأحمد":"Dr. Mohammad Al-Ahmad", spec:lang==="ar"?"استشاري جراحة العظام":"Orthopedic Surgeon", exp:lang==="ar"?"12 سنة خبرة":"12 yrs exp", init:"م.أ", rating:4.8, reviews:124},
+              {name:lang==="ar"?"د. سارة خليل":"Dr. Sara Khalil", spec:lang==="ar"?"أخصائية أمراض القلب":"Cardiologist", exp:lang==="ar"?"8 سنوات خبرة":"8 yrs exp", init:"س.خ", rating:4.9, reviews:89},
+              {name:lang==="ar"?"د. أحمد ياسين":"Dr. Ahmad Yaseen", spec:lang==="ar"?"استشاري جراحة الأعصاب":"Neurosurgeon", exp:lang==="ar"?"15 سنة خبرة":"15 yrs exp", init:"أ.ي", rating:4.7, reviews:210},
+            ].map((doc,i) => (
+              <div key={i} style={{ background:colors.card, border:`1px solid ${colors.border}`, borderRadius:20, padding:24, textAlign:"center", boxShadow: dark ? "none" : "0 2px 12px rgba(0,0,0,0.06)" }}>
+                <div style={{ width:80, height:80, background:"linear-gradient(135deg,#0066FF,#00A3FF)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px", fontSize:22, color:"white", fontWeight:800 }}>{doc.init}</div>
+                <div style={{ fontWeight:800, fontSize:17, color:colors.text, marginBottom:4 }}>{doc.name}</div>
+                <div style={{ color:"#0066FF", fontSize:13, fontWeight:600, marginBottom:8 }}>{doc.spec}</div>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginBottom:16 }}>
+                  <span style={{ background:colors.bgSecondary, color:colors.textSecondary, fontSize:12, padding:"4px 10px", borderRadius:20 }}>{doc.exp}</span>
+                  <span style={{ color:"#F59E0B", fontSize:13, fontWeight:700 }}>★ {doc.rating}</span>
                 </div>
-                <h3 className="font-bold text-xl mb-1" style={{ color: "#1A1A2E" }}>{doc.name}</h3>
-                <p className="font-medium text-sm mb-3" style={{ color: "#0066FF" }}>{doc.spec}</p>
-                <span className="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full mb-6">{doc.exp}</span>
-                <Button style={{ backgroundColor: "#0066FF", color: "#ffffff" }} className="w-full hover:bg-blue-600">
-                  احجز
-                </Button>
+                <button style={{ width:"100%", background:"linear-gradient(135deg,#0066FF,#0052CC)", color:"white", border:"none", padding:"10px", borderRadius:10, fontSize:14, fontWeight:700, cursor:"pointer" }}>
+                  {lang==="ar" ? "احجز موعداً" : "Book Appointment"}
+                </button>
               </div>
             ))}
           </div>
@@ -111,41 +98,43 @@ export function LandingPage() {
       </section>
 
       {/* AI SECTION */}
-      <section style={{ backgroundColor: "#1A1A2E" }} className="py-20 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center text-white mb-12">المساعد الطبي الذكي</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { title: "تحليل الأعراض", icon: Activity, desc: "قم بإدخال أعراضك وسيقوم المساعد الذكي بتوجيهك للتخصص المناسب." },
-              { title: "قراءة التحاليل", icon: FileText, desc: "ارفع نتائج تحاليلك الطبية واحصل على شرح مبسط وسريع لمؤشراتك." },
-              { title: "تحليل الأشعة", icon: Search, desc: "تقنيات رؤية حاسوبية متقدمة للمساعدة في قراءة صور الأشعة السينية." },
-            ].map((feat, i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-colors">
-                <div style={{ color: "#0066FF" }} className="bg-[#0066FF]/10 w-14 h-14 rounded-xl flex items-center justify-center mb-6">
-                  <feat.icon size={28} />
+      <section style={{ background: dark ? "#0D1825" : "#1A1A2E", padding:"64px 24px" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto", textAlign:"center" }}>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:8, background:"rgba(0,102,255,0.2)", border:"1px solid rgba(0,102,255,0.3)", borderRadius:20, padding:"6px 16px", marginBottom:20 }}>
+            <Brain size={14} color="#60A5FA" /><span style={{ color:"#60A5FA", fontSize:12, fontWeight:600 }}>AI-Powered</span>
+          </div>
+          <h2 style={{ color:"white", fontSize:32, fontWeight:800, marginBottom:10 }}>{lang==="ar" ? "المساعد الطبي الذكي" : "AI Medical Assistant"}</h2>
+          <p style={{ color:"#94A3B8", fontSize:16, marginBottom:48 }}>{lang==="ar" ? "اكتب أعراضك وسيوجهك الذكاء الاصطناعي للقسم والطبيب المناسب" : "Describe your symptoms and our AI will guide you to the right specialist"}</p>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:20 }}>
+            {(lang==="ar" ? ["تحليل الأعراض","قراءة التحاليل","تحليل الأشعة"] : ["Symptom Analysis","Lab Results Reading","Radiology Analysis"]).map((feat,i) => {
+              const icons = [Activity,Pill,FileText];
+              const Icon = icons[i];
+              return (
+                <div key={i} style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:20, padding:"32px 24px", textAlign:"center" }}>
+                  <div style={{ width:64, height:64, background:"rgba(0,102,255,0.15)", border:"1px solid rgba(0,102,255,0.3)", borderRadius:20, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 18px" }}>
+                    <Icon size={28} color="#60A5FA" />
+                  </div>
+                  <div style={{ color:"white", fontWeight:700, fontSize:17, marginBottom:10 }}>{feat}</div>
+                  <div style={{ color:"#94A3B8", fontSize:14, lineHeight:1.7 }}>{(lang==="ar" ? ["أدخل أعراضك ونوجهك للتخصص المناسب","ارفع صورة التحليل للقراءة الأولية","ارفع صورة الأشعة للتحليل الذكي"] : ["Enter symptoms, get directed to right specialist","Upload lab results for preliminary reading","Upload X-ray for AI-powered analysis"])[i]}</div>
                 </div>
-                <h3 className="font-bold text-xl text-white mb-3">{feat.title}</h3>
-                <p className="text-slate-400 leading-relaxed">{feat.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer style={{ backgroundColor: "#0f0f1c" }} className="py-8 px-6 text-center border-t border-white/10">
-        <div style={{ color: "#0066FF" }} className="text-2xl font-bold tracking-tight mb-4">
-          HealPath
+      <footer style={{ background: dark ? "#080E18" : "#0D1117", padding:"32px 24px", textAlign:"center" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:10, marginBottom:12 }}>
+          <div style={{ width:32, height:32, background:"linear-gradient(135deg,#0066FF,#00A3FF)", borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <svg width="18" height="13" viewBox="0 0 22 16" fill="none"><path d="M1 8 L4 8 L6 3 L8 13 L10 6 L12 10 L14 8 L21 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </div>
+          <span style={{ color:"white", fontWeight:700, fontSize:16 }}>HealPath</span>
         </div>
-        <div className="flex justify-center gap-6 mb-6">
-          <a href="#" className="text-slate-400 hover:text-white transition-colors text-sm">سياسة الخصوصية</a>
-          <a href="#" className="text-slate-400 hover:text-white transition-colors text-sm">الشروط والأحكام</a>
-          <a href="#" className="text-slate-400 hover:text-white transition-colors text-sm">اتصل بنا</a>
-        </div>
-        <p className="text-slate-500 text-sm">
-          جميع الحقوق محفوظة 2026 © HealPath
-        </p>
+        <p style={{ color:"#475569", fontSize:13 }}>© 2026 HealPath — {lang==="ar" ? "جميع الحقوق محفوظة" : "All rights reserved"}</p>
       </footer>
+
+      <UnifiedAIFloat lang={lang} dark={dark} aiOpen={aiOpen} setAiOpen={setAiOpen} colors={colors} />
     </div>
   );
 }

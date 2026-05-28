@@ -1,294 +1,177 @@
-import React, { useState } from 'react';
-import { 
-  Bell, 
-  Search, 
-  Calendar, 
-  Pill, 
-  BrainCircuit, 
-  LayoutDashboard, 
-  Users, 
-  BriefcaseMedical, 
-  FileText, 
-  ChevronDown,
-  Clock,
-  CheckCircle2,
-  Bot
-} from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { useState } from "react";
+import { Bell, Search, Calendar, Pill, Brain, LayoutDashboard, Users, BriefcaseMedical, FileText, ChevronDown, Clock, CheckCircle2, Activity, LogOut, Settings } from "lucide-react";
+import { UnifiedNavbar, UnifiedAIFloat, theme, useHealPathStore, HealPathLogo, type Lang } from "./shared/UnifiedComponents";
 
 export function PatientDashboard() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const { lang, dark, setLang, setDark, aiOpen, setAiOpen } = useHealPathStore();
+  const colors = dark ? theme.dark : theme.light;
+  const isRtl = lang === "ar";
+  const font = isRtl ? "'Cairo',sans-serif" : "'Inter',sans-serif";
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const sidebarLinks = [
-    { id: 'dashboard', label: 'القسم الرئيسي', icon: LayoutDashboard },
-    { id: 'doctors', label: 'الأطباء', icon: Users },
-    { id: 'appointments', label: 'مواعيدي', icon: Calendar },
-    { id: 'pharmacy', label: 'الصيدلية', icon: Pill },
-    { id: 'recruitment', label: 'التوظيف', icon: BriefcaseMedical },
-    { id: 'articles', label: 'المقالات', icon: FileText },
+    { id:"dashboard", label: lang==="ar"?"الرئيسية":"Dashboard", icon:LayoutDashboard },
+    { id:"doctors",   label: lang==="ar"?"الأطباء":"Doctors",     icon:Users },
+    { id:"appointments", label: lang==="ar"?"مواعيدي":"Appointments", icon:Calendar },
+    { id:"pharmacy",  label: lang==="ar"?"الصيدلية":"Pharmacy",   icon:Pill },
+    { id:"recruitment", label: lang==="ar"?"التوظيف":"Careers",   icon:BriefcaseMedical },
+    { id:"articles",  label: lang==="ar"?"المقالات":"Articles",   icon:FileText },
   ];
 
   return (
-    <div dir="rtl" className="min-h-screen bg-slate-50 font-sans text-[#1A1A2E] flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-l border-slate-200 flex-shrink-0 flex flex-col hidden md:flex h-screen sticky top-0">
-        <div className="p-6 flex items-center gap-3 border-b border-slate-100">
-          <div className="w-10 h-10 bg-[#0066FF] rounded-xl flex items-center justify-center text-white font-bold text-xl">
-            H
+    <div dir={isRtl?"rtl":"ltr"} style={{ background:colors.bg, color:colors.text, minHeight:"100vh", fontFamily:font, display:"flex", flexDirection:"column" }}>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+      
+      <UnifiedNavbar lang={lang} dark={dark} setLang={setLang} setDark={setDark} activePage="home" />
+
+      <div style={{ display:"flex", flex:1, overflow:"hidden" }}>
+        {/* Sidebar */}
+        <aside style={{ width:240, background: dark?"#0D1825":"#1A1A2E", display:"flex", flexDirection:"column", flexShrink:0, height:"calc(100vh - 64px)", position:"sticky", top:64 }}>
+          <div style={{ flex:1, padding:"20px 12px", overflowY:"auto" }}>
+            {sidebarLinks.map(link => {
+              const Icon = link.icon;
+              const isActive = activeTab === link.id;
+              return (
+                <button key={link.id} onClick={() => setActiveTab(link.id)} style={{ width:"100%", display:"flex", alignItems:"center", gap:12, padding:"10px 14px", borderRadius:10, border:"none", cursor:"pointer", marginBottom:4, background: isActive?"rgba(0,102,255,0.2)":"transparent", color: isActive?"#60A5FA":"#94A3B8", fontFamily:font, fontSize:14, fontWeight: isActive?700:500, textAlign:"start", transition:"all 0.2s" }}>
+                  <Icon size={18} color={isActive?"#60A5FA":"#64748B"} />
+                  {link.label}
+                  {isActive && <div style={{ marginInlineStart:"auto", width:6, height:6, background:"#0066FF", borderRadius:"50%" }} />}
+                </button>
+              );
+            })}
           </div>
-          <span className="text-xl font-bold text-[#1A1A2E]">HealPath</span>
-        </div>
-        
-        <div className="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
-          {sidebarLinks.map((link) => {
-            const Icon = link.icon;
-            const isActive = activeTab === link.id;
-            return (
-              <button
-                key={link.id}
-                onClick={() => setActiveTab(link.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-[#0066FF]/10 text-[#0066FF] font-medium' 
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-[#1A1A2E]'
-                }`}
-              >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-[#0066FF]' : 'text-slate-400'}`} />
-                <span>{link.label}</span>
+          {/* User Profile */}
+          <div style={{ padding:"16px 12px", borderTop:"1px solid rgba(255,255,255,0.08)" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:12, background:"rgba(255,255,255,0.06)", cursor:"pointer" }}>
+              <div style={{ width:36, height:36, background:"linear-gradient(135deg,#0066FF,#00A3FF)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:800, fontSize:14, flexShrink:0 }}>
+                {isRtl?"إب":"IB"}
+              </div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ color:"white", fontWeight:700, fontSize:13, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{isRtl?"إبراهيم عبدالله":"Ibrahim Abdullah"}</div>
+                <div style={{ color:"#64748B", fontSize:11 }}>{isRtl?"مريض":"Patient"}</div>
+              </div>
+              <ChevronDown size={14} color="#64748B" />
+            </div>
+          </div>
+        </aside>
+
+        {/* Main */}
+        <main style={{ flex:1, overflowY:"auto", background:colors.bgSecondary }}>
+          {/* Top bar */}
+          <header style={{ background:colors.card, borderBottom:`1px solid ${colors.border}`, height:64, display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", position:"sticky", top:0, zIndex:20 }}>
+            <div style={{ position:"relative", width:320 }}>
+              <Search size={16} color={colors.textSecondary} style={{ position:"absolute", top:"50%", transform:"translateY(-50%)", ...(isRtl?{right:12}:{left:12}) }} />
+              <input placeholder={isRtl?"ابحث عن طبيب أو دواء...":"Search doctors, medicines..."} style={{ width:"100%", background:colors.bgSecondary, border:`1px solid ${colors.border}`, borderRadius:24, padding:isRtl?"9px 36px 9px 12px":"9px 12px 9px 36px", fontSize:13, color:colors.text, outline:"none", fontFamily:font }} />
+            </div>
+            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+              <button style={{ background:"linear-gradient(135deg,#0066FF,#0052CC)", border:"none", color:"white", padding:"8px 18px", borderRadius:8, fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                {isRtl?"حالة طوارئ":"Emergency"}
               </button>
-            );
-          })}
-        </div>
-
-        <div className="p-4 border-t border-slate-100">
-          <div className="bg-slate-50 p-4 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-slate-100 transition-colors">
-            <Avatar className="w-10 h-10 border-2 border-white shadow-sm">
-              <AvatarImage src="https://i.pravatar.cc/150?u=ibrahim" />
-              <AvatarFallback className="bg-[#0066FF] text-white">إب</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-[#1A1A2E] truncate">إبراهيم عبدالله</p>
-              <p className="text-xs text-slate-500 truncate">مريض</p>
             </div>
-            <button className="text-slate-400 hover:text-slate-600">
-              <ChevronDown className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </aside>
+          </header>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col min-h-screen max-w-full overflow-hidden">
-        {/* Top Navbar */}
-        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-20">
-          <div className="flex items-center gap-4 w-96">
-            <div className="relative w-full hidden md:block">
-              <Search className="w-4 h-4 absolute end-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="ابحث عن طبيب، موعد، أو دواء..." 
-                className="w-full bg-slate-100 border-none rounded-full py-2.5 pe-10 ps-4 text-sm focus:ring-2 focus:ring-[#0066FF]/20 focus:outline-none placeholder-slate-400"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-400 hover:text-[#1A1A2E] transition-colors rounded-full hover:bg-slate-100">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 start-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-            <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
-            <div className="flex items-center gap-3 md:hidden">
-              <Avatar className="w-8 h-8">
-                <AvatarFallback className="bg-[#0066FF] text-white">إب</AvatarFallback>
-              </Avatar>
-            </div>
-            <Button className="hidden md:flex bg-[#1A1A2E] hover:bg-[#1A1A2E]/90 text-white rounded-full px-6">
-              حالة الطوارئ
-            </Button>
-          </div>
-        </header>
-
-        {/* Dashboard Content */}
-        <div className="flex-1 p-4 md:p-8 overflow-y-auto">
-          <div className="max-w-6xl mx-auto space-y-8">
-            
-            {/* Welcome Section */}
-            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-[#1A1A2E] mb-2 flex items-center gap-2">
-                  مرحباً إبراهيم <span className="text-2xl animate-wave origin-bottom-right">👋</span>
-                </h1>
-                <p className="text-slate-500 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  {new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                </p>
-              </div>
-              <div className="flex gap-3 w-full md:w-auto">
-                <Button className="bg-[#0066FF] hover:bg-[#0066FF]/90 text-white rounded-xl shadow-lg shadow-[#0066FF]/20 w-full md:w-auto h-12 md:h-10">
-                  <Calendar className="w-4 h-4 me-2" />
-                  حجز موعد جديد
-                </Button>
-              </div>
+          <div style={{ padding:32, maxWidth:1100, margin:"0 auto" }}>
+            {/* Welcome */}
+            <div style={{ marginBottom:32 }}>
+              <h1 style={{ fontSize:28, fontWeight:800, color:colors.text, marginBottom:6 }}>
+                {isRtl?"مرحباً إبراهيم 👋":"Welcome, Ibrahim 👋"}
+              </h1>
+              <p style={{ color:colors.textSecondary, fontSize:14 }}>
+                {new Date().toLocaleDateString(isRtl?"ar-SA":"en-US", { weekday:"long", year:"numeric", month:"long", day:"numeric" })}
+              </p>
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="border-none shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-gradient-to-br from-[#0066FF] to-blue-600 text-white overflow-hidden relative group">
-                <div className="absolute top-0 start-0 p-6 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                  <Calendar className="w-24 h-24" />
-                </div>
-                <CardContent className="p-6 relative z-10">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-4">
-                    <Calendar className="w-6 h-6 text-white" />
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:20, marginBottom:32 }}>
+              {[
+                { icon:Calendar, label:isRtl?"احجز موعداً":"Book Appointment", sub:isRtl?"استعرض الأطباء المتاحين":"Browse available doctors", gradient:"linear-gradient(135deg,#0066FF,#0052CC)", white:true },
+                { icon:Pill, label:isRtl?"الصيدلية الإلكترونية":"E-Pharmacy", sub:isRtl?"اطلب أدويتك بسهولة":"Order your medicines", gradient:null, white:false },
+                { icon:Brain, label:isRtl?"المساعد الذكي":"AI Assistant", sub:isRtl?"تحليل الأعراض فوراً":"Instant symptom analysis", gradient:null, white:false },
+              ].map((card,i) => {
+                const Icon = card.icon;
+                return (
+                  <div key={i} style={{ background: card.gradient||colors.card, border:`1px solid ${colors.border}`, borderRadius:16, padding:24, cursor:"pointer", boxShadow: dark?"none":"0 2px 12px rgba(0,0,0,0.06)" }}>
+                    <div style={{ width:48, height:48, background: card.white?"rgba(255,255,255,0.2)":"rgba(0,102,255,0.1)", borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:16 }}>
+                      <Icon size={22} color={card.white?"white":"#0066FF"} />
+                    </div>
+                    <div style={{ fontWeight:800, fontSize:16, color:card.white?"white":colors.text, marginBottom:6 }}>{card.label}</div>
+                    <div style={{ fontSize:13, color:card.white?"rgba(255,255,255,0.75)":colors.textSecondary }}>{card.sub}</div>
                   </div>
-                  <h3 className="text-xl font-bold mb-1">احجز موعداً جديداً</h3>
-                  <p className="text-blue-100 text-sm">استعرض الأطباء المتاحين واحجز فوراً</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white group">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-[#0066FF]/10 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-[#0066FF] transition-colors duration-300">
-                    <Pill className="w-6 h-6 text-[#0066FF] group-hover:text-white transition-colors duration-300" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#1A1A2E] mb-1">الصيدلية الإلكترونية</h3>
-                  <p className="text-slate-500 text-sm">اطلب أدويتك وتابع الوصفات الطبية</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white group">
-                <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-purple-600 transition-colors duration-300">
-                    <BrainCircuit className="w-6 h-6 text-purple-600 group-hover:text-white transition-colors duration-300" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#1A1A2E] mb-1">المساعد الذكي</h3>
-                  <p className="text-slate-500 text-sm">تحليل الأعراض واستشارات فورية</p>
-                </CardContent>
-              </Card>
+                );
+              })}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr", gap:24 }}>
               {/* Upcoming Appointment */}
-              <div className="lg:col-span-2 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-[#1A1A2E]">الموعد القادم</h2>
-                  <Button variant="ghost" className="text-[#0066FF] hover:bg-[#0066FF]/10 hover:text-[#0066FF]">
-                    عرض كل المواعيد
-                  </Button>
+              <div>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
+                  <h2 style={{ fontSize:18, fontWeight:800, color:colors.text }}>{isRtl?"الموعد القادم":"Upcoming Appointment"}</h2>
+                  <button style={{ color:"#0066FF", background:"none", border:"none", fontSize:13, fontWeight:600, cursor:"pointer" }}>{isRtl?"عرض الكل":"View all"}</button>
                 </div>
-                
-                <Card className="border-slate-100 shadow-sm overflow-hidden">
-                  <div className="bg-[#1A1A2E] h-2 w-full"></div>
-                  <CardContent className="p-6">
-                    <div className="flex flex-col md:flex-row justify-between gap-6">
-                      <div className="flex flex-col sm:flex-row items-start gap-4">
-                        <Avatar className="w-16 h-16 border-2 border-slate-100 shrink-0">
-                          <AvatarImage src="https://i.pravatar.cc/150?u=dr_ahmed" />
-                          <AvatarFallback>د.أ</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 mb-2 border-none font-medium">
-                            <CheckCircle2 className="w-3 h-3 me-1" /> مؤكد
-                          </Badge>
-                          <h3 className="text-xl font-bold text-[#1A1A2E]">د. أحمد محمود</h3>
-                          <p className="text-[#0066FF] font-medium text-sm">استشاري أمراض القلب والأوعية الدموية</p>
-                          
-                          <div className="flex flex-wrap gap-4 mt-4">
-                            <div className="flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg text-sm border border-slate-100">
-                              <Calendar className="w-4 h-4 text-[#0066FF]" />
-                              <span>الخميس، ٢٥ مايو ٢٠٢٤</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg text-sm border border-slate-100">
-                              <Clock className="w-4 h-4 text-[#0066FF]" />
-                              <span>١٠:٠٠ صباحاً</span>
-                            </div>
-                          </div>
-                        </div>
+                <div style={{ background:colors.card, border:`1px solid ${colors.border}`, borderRadius:16, overflow:"hidden", boxShadow: dark?"none":"0 2px 12px rgba(0,0,0,0.06)" }}>
+                  <div style={{ height:4, background:"linear-gradient(90deg,#0066FF,#00A3FF)" }} />
+                  <div style={{ padding:24 }}>
+                    <div style={{ display:"flex", gap:16, marginBottom:20 }}>
+                      <div style={{ width:64, height:64, background:"linear-gradient(135deg,#0066FF,#00A3FF)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:800, fontSize:18, flexShrink:0 }}>
+                        {isRtl?"د.أ":"Dr.A"}
                       </div>
-                      
-                      <div className="flex flex-col gap-2 min-w-[140px] justify-center border-t md:border-t-0 md:border-r md:border-r-slate-100 pt-4 md:pt-0 md:pr-6">
-                        <Button className="w-full bg-[#1A1A2E] hover:bg-[#1A1A2E]/90 text-white">
-                          تفاصيل الموعد
-                        </Button>
-                        <Button variant="outline" className="w-full border-slate-200 text-slate-600 hover:bg-slate-50">
-                          إعادة جدولة
-                        </Button>
-                        <Button variant="ghost" className="w-full text-red-500 hover:text-red-600 hover:bg-red-50">
-                          إلغاء الموعد
-                        </Button>
+                      <div>
+                        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
+                          <span style={{ background:"#D1FAE5", color:"#059669", fontSize:11, fontWeight:700, padding:"3px 8px", borderRadius:20, display:"flex", alignItems:"center", gap:4 }}>
+                            <CheckCircle2 size={10}/>{isRtl?"مؤكد":"Confirmed"}
+                          </span>
+                        </div>
+                        <div style={{ fontWeight:800, fontSize:17, color:colors.text, marginBottom:4 }}>{isRtl?"د. أحمد محمود":"Dr. Ahmad Mahmoud"}</div>
+                        <div style={{ color:"#0066FF", fontSize:13, fontWeight:600 }}>{isRtl?"استشاري أمراض القلب":"Cardiologist"}</div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                    <div style={{ display:"flex", gap:10, flexWrap:"wrap", marginBottom:20 }}>
+                      {[{Icon:Calendar,text:isRtl?"الخميس، 29 مايو 2026":"Thursday, May 29 2026"},{Icon:Clock,text:isRtl?"10:00 صباحاً":"10:00 AM"}].map(({Icon,text},i) => (
+                        <div key={i} style={{ display:"flex", alignItems:"center", gap:6, background:colors.bgSecondary, border:`1px solid ${colors.border}`, borderRadius:8, padding:"6px 12px", fontSize:13, color:colors.textSecondary }}>
+                          <Icon size={14} color="#0066FF"/>{text}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ display:"flex", gap:10 }}>
+                      <button style={{ flex:1, background:"linear-gradient(135deg,#1A1A2E,#0F3460)", color:"white", border:"none", padding:"10px", borderRadius:10, fontSize:13, fontWeight:700, cursor:"pointer" }}>{isRtl?"تفاصيل الموعد":"Appointment Details"}</button>
+                      <button style={{ flex:1, background:"transparent", color:colors.text, border:`1px solid ${colors.border}`, padding:"10px", borderRadius:10, fontSize:13, fontWeight:600, cursor:"pointer" }}>{isRtl?"إعادة جدولة":"Reschedule"}</button>
+                      <button style={{ padding:"10px 14px", background:"transparent", color:"#EF4444", border:"1px solid #FEE2E2", borderRadius:10, fontSize:13, fontWeight:600, cursor:"pointer" }}>{isRtl?"إلغاء":"Cancel"}</button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Recent Activity */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-bold text-[#1A1A2E]">النشاط الأخير</h2>
-                <Card className="border-slate-100 shadow-sm h-[320px] overflow-hidden">
-                  <CardContent className="p-6 h-full">
-                    <div className="space-y-6 relative before:absolute before:inset-0 before:me-[23px] before:translate-x-px before:h-full before:w-0.5 before:bg-slate-100">
-                      
-                      {/* Activity 1 */}
-                      <div className="relative flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-blue-50 border-4 border-white flex items-center justify-center flex-shrink-0 z-10 text-[#0066FF]">
-                          <Calendar className="w-5 h-5" />
+              {/* Activity */}
+              <div>
+                <h2 style={{ fontSize:18, fontWeight:800, color:colors.text, marginBottom:16 }}>{isRtl?"النشاط الأخير":"Recent Activity"}</h2>
+                <div style={{ background:colors.card, border:`1px solid ${colors.border}`, borderRadius:16, padding:20, boxShadow: dark?"none":"0 2px 12px rgba(0,0,0,0.06)" }}>
+                  {[
+                    {icon:Calendar,color:"#3B82F6",bg:"#EFF6FF",label:isRtl?"تم حجز موعد":"Appointment booked",sub:isRtl?"مع د. أحمد محمود":"With Dr. Ahmad",time:isRtl?"منذ ساعتين":"2 hrs ago"},
+                    {icon:Pill,color:"#10B981",bg:"#ECFDF5",label:isRtl?"توصيل الأدوية":"Medicine delivered",sub:isRtl?"طلب رقم #49281":"Order #49281",time:isRtl?"أمس":"Yesterday"},
+                    {icon:Brain,color:"#8B5CF6",bg:"#F5F3FF",label:isRtl?"استشارة المساعد":"AI Consultation",sub:isRtl?"تحليل أعراض الصداع":"Headache analysis",time:isRtl?"12 مايو":"May 12"},
+                  ].map((item,i) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:12, marginBottom: i<2?20:0 }}>
+                        <div style={{ width:40, height:40, background:dark?colors.bgSecondary:item.bg, borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                          <Icon size={18} color={item.color}/>
                         </div>
-                        <div className="pt-2">
-                          <p className="font-semibold text-[#1A1A2E] text-sm">تم حجز موعد جديد</p>
-                          <p className="text-slate-500 text-xs mt-1">مع د. أحمد محمود - قسم القلب</p>
-                          <p className="text-slate-400 text-xs mt-1">منذ ساعتين</p>
-                        </div>
-                      </div>
-
-                      {/* Activity 2 */}
-                      <div className="relative flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-emerald-50 border-4 border-white flex items-center justify-center flex-shrink-0 z-10 text-emerald-600">
-                          <Pill className="w-5 h-5" />
-                        </div>
-                        <div className="pt-2">
-                          <p className="font-semibold text-[#1A1A2E] text-sm">تم توصيل الأدوية</p>
-                          <p className="text-slate-500 text-xs mt-1">طلب رقم #49281 مكتمل</p>
-                          <p className="text-slate-400 text-xs mt-1">أمس، ٠٤:٣٠ مساءً</p>
+                        <div style={{ flex:1 }}>
+                          <div style={{ fontWeight:700, fontSize:13, color:colors.text, marginBottom:2 }}>{item.label}</div>
+                          <div style={{ fontSize:12, color:colors.textSecondary, marginBottom:2 }}>{item.sub}</div>
+                          <div style={{ fontSize:11, color:colors.textSecondary }}>{item.time}</div>
                         </div>
                       </div>
-
-                      {/* Activity 3 */}
-                      <div className="relative flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-purple-50 border-4 border-white flex items-center justify-center flex-shrink-0 z-10 text-purple-600">
-                          <BrainCircuit className="w-5 h-5" />
-                        </div>
-                        <div className="pt-2">
-                          <p className="font-semibold text-[#1A1A2E] text-sm">استشارة المساعد الذكي</p>
-                          <p className="text-slate-500 text-xs mt-1">تحليل أعراض الصداع النصفي</p>
-                          <p className="text-slate-400 text-xs mt-1">١٢ مايو، ١٠:١٥ صباحاً</p>
-                        </div>
-                      </div>
-
-                    </div>
-                  </CardContent>
-                </Card>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-            
           </div>
-        </div>
-      </main>
-
-      {/* Floating AI Assistant Button */}
-      <div className="fixed bottom-8 start-8 z-50">
-        <button className="group flex items-center gap-3 bg-[#0066FF] text-white p-4 rounded-full shadow-xl shadow-[#0066FF]/30 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:bg-blue-600">
-          <Bot className="w-7 h-7" />
-          <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap font-medium px-0 group-hover:px-2">
-            المساعد الطبي
-          </span>
-        </button>
+        </main>
       </div>
 
+      <UnifiedAIFloat lang={lang} dark={dark} aiOpen={aiOpen} setAiOpen={setAiOpen} colors={colors} />
     </div>
   );
 }

@@ -1,389 +1,186 @@
-import React, { useState } from "react";
-import { 
-  Search, Star, Calendar as CalendarIcon, Clock, 
-  MessageCircle, Filter, Award, MapPin, CheckCircle2, ChevronRight, Menu, Bell, User
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useState } from "react";
+import { Search, Star, Calendar, Clock, Award, CheckCircle2, X, ChevronRight } from "lucide-react";
+import { UnifiedNavbar, UnifiedAIFloat, theme, useHealPathStore, type Lang } from "./shared/UnifiedComponents";
 
-const DOCTORS = [
-  {
-    id: "1",
-    name: "د. محمد الأحمد",
-    specialty: "استشاري جراحة العظام والمفاصل",
-    department: "العظمية",
-    experience: "12 سنة خبرة",
-    rating: 4.8,
-    reviewsCount: 124,
-    slotsCount: 5,
-    bio: "حاصل على البورد الأمريكي في جراحة العظام، متخصص في جراحة المفاصل الصناعية والإصابات الرياضية.",
-    initials: "م.أ",
-    color: "bg-blue-100 text-blue-700",
-  },
-  {
-    id: "2",
-    name: "د. سارة خليل",
-    specialty: "أخصائية أمراض القلب والأوعية الدموية",
-    department: "القلبية",
-    experience: "8 سنوات خبرة",
-    rating: 4.9,
-    reviewsCount: 89,
-    slotsCount: 3,
-    bio: "خبيرة في تشخيص وعلاج أمراض القلب التاجية واضطرابات النظم القلبي. زميلة الكلية الملكية للأطباء.",
-    initials: "س.خ",
-    color: "bg-indigo-100 text-indigo-700",
-  },
-  {
-    id: "3",
-    name: "د. أحمد ياسين",
-    specialty: "استشاري جراحة الدماغ والأعصاب",
-    department: "العصبية",
-    experience: "15 سنة خبرة",
-    rating: 4.7,
-    reviewsCount: 210,
-    slotsCount: 2,
-    bio: "متخصص في الجراحات الميكروسكوبية الدقيقة لأورام الدماغ وجراحات العمود الفقري المتقدمة.",
-    initials: "أ.ي",
-    color: "bg-emerald-100 text-emerald-700",
-  },
-  {
-    id: "4",
-    name: "د. نورة السالم",
-    specialty: "استشارية الأمراض الصدرية والتنفسية",
-    department: "الصدرية",
-    experience: "10 سنوات خبرة",
-    rating: 4.6,
-    reviewsCount: 156,
-    slotsCount: 7,
-    bio: "متخصصة في علاج الربو، التليف الرئوي، وأمراض الحساسية التنفسية. أستاذة مساعدة في كلية الطب.",
-    initials: "ن.س",
-    color: "bg-purple-100 text-purple-700",
-  },
-  {
-    id: "5",
-    name: "د. عمر الفاروق",
-    specialty: "أخصائي أمراض الكلى وضغط الدم",
-    department: "الكلى",
-    experience: "14 سنة خبرة",
-    rating: 4.8,
-    reviewsCount: 178,
-    slotsCount: 4,
-    bio: "خبير في إدارة حالات القصور الكلوي المزمن، غسيل الكلى، ومتابعة زراعة الكلى.",
-    initials: "ع.ف",
-    color: "bg-orange-100 text-orange-700",
-  },
-  {
-    id: "6",
-    name: "د. ريم الحسن",
-    specialty: "أخصائية جراحة العظام والعمود الفقري",
-    department: "العظمية",
-    experience: "6 سنوات خبرة",
-    rating: 4.5,
-    reviewsCount: 64,
-    slotsCount: 8,
-    bio: "متخصصة في علاج انحرافات العمود الفقري وآلام الظهر المزمنة والديسك.",
-    initials: "ر.ح",
-    color: "bg-rose-100 text-rose-700",
-  },
-];
+const DOCTORS_DATA = {
+  ar: [
+    { id:"1", name:"د. محمد الأحمد", spec:"استشاري جراحة العظام والمفاصل", dept:"العظمية", exp:"12 سنة", rating:4.8, reviews:124, slots:5, init:"م.أ", bio:"حاصل على البورد الأمريكي في جراحة العظام، متخصص في جراحة المفاصل الصناعية والإصابات الرياضية." },
+    { id:"2", name:"د. سارة خليل", spec:"أخصائية أمراض القلب والأوعية الدموية", dept:"القلبية", exp:"8 سنوات", rating:4.9, reviews:89, slots:3, init:"س.خ", bio:"خبيرة في تشخيص وعلاج أمراض القلب التاجية واضطرابات النظم القلبي." },
+    { id:"3", name:"د. أحمد ياسين", spec:"استشاري جراحة الدماغ والأعصاب", dept:"العصبية", exp:"15 سنة", rating:4.7, reviews:210, slots:2, init:"أ.ي", bio:"متخصص في الجراحات الميكروسكوبية الدقيقة لأورام الدماغ وجراحات العمود الفقري المتقدمة." },
+    { id:"4", name:"د. نورة السالم", spec:"استشارية الأمراض الصدرية والتنفسية", dept:"الصدرية", exp:"10 سنوات", rating:4.6, reviews:156, slots:7, init:"ن.س", bio:"متخصصة في علاج الربو والتليف الرئوي وأمراض الحساسية التنفسية." },
+    { id:"5", name:"د. عمر الفاروق", spec:"أخصائي أمراض الكلى وضغط الدم", dept:"الكلى", exp:"14 سنة", rating:4.8, reviews:178, slots:4, init:"ع.ف", bio:"خبير في إدارة حالات القصور الكلوي المزمن وغسيل الكلى." },
+    { id:"6", name:"د. ريم الحسن", spec:"أخصائية جراحة العظام والعمود الفقري", dept:"العظمية", exp:"6 سنوات", rating:4.5, reviews:64, slots:8, init:"ر.ح", bio:"متخصصة في علاج انحرافات العمود الفقري وآلام الظهر المزمنة." },
+  ],
+  en: [
+    { id:"1", name:"Dr. Mohammad Al-Ahmad", spec:"Orthopedic Surgery Consultant", dept:"Orthopedics", exp:"12 yrs", rating:4.8, reviews:124, slots:5, init:"MA", bio:"American Board certified in orthopedics, specializing in joint replacement and sports injuries." },
+    { id:"2", name:"Dr. Sara Khalil", spec:"Cardiology Specialist", dept:"Cardiology", exp:"8 yrs", rating:4.9, reviews:89, slots:3, init:"SK", bio:"Expert in diagnosing and treating coronary artery disease and cardiac arrhythmias." },
+    { id:"3", name:"Dr. Ahmad Yaseen", spec:"Neurosurgery Consultant", dept:"Neurology", exp:"15 yrs", rating:4.7, reviews:210, slots:2, init:"AY", bio:"Specialist in microsurgical brain tumor removal and advanced spine surgery." },
+    { id:"4", name:"Dr. Noura Al-Salem", spec:"Pulmonology Consultant", dept:"Pulmonology", exp:"10 yrs", rating:4.6, reviews:156, slots:7, init:"NS", bio:"Specialist in asthma, pulmonary fibrosis and respiratory allergy diseases." },
+    { id:"5", name:"Dr. Omar Al-Farouq", spec:"Nephrology Specialist", dept:"Nephrology", exp:"14 yrs", rating:4.8, reviews:178, slots:4, init:"OF", bio:"Expert in chronic renal failure management and dialysis care." },
+    { id:"6", name:"Dr. Reem Al-Hassan", spec:"Spine & Orthopedics Specialist", dept:"Orthopedics", exp:"6 yrs", rating:4.5, reviews:64, slots:8, init:"RH", bio:"Specialist in spine deformities and chronic back pain." },
+  ]
+};
 
-const DEPARTMENTS = ["الكل", "العظمية", "الصدرية", "الكلى", "القلبية", "العصبية"];
+const WEEK_DAYS_AR = [{ d:"الأحد",date:"15",active:true },{ d:"الإثنين",date:"16",active:true },{ d:"الثلاثاء",date:"17",active:false },{ d:"الأربعاء",date:"18",active:true },{ d:"الخميس",date:"19",active:true },{ d:"الجمعة",date:"20",active:false },{ d:"السبت",date:"21",active:false }];
+const WEEK_DAYS_EN = [{ d:"Sun",date:"15",active:true },{ d:"Mon",date:"16",active:true },{ d:"Tue",date:"17",active:false },{ d:"Wed",date:"18",active:true },{ d:"Thu",date:"19",active:true },{ d:"Fri",date:"20",active:false },{ d:"Sat",date:"21",active:false }];
+const TIMES = ["09:00","10:00","10:30","13:00","14:30","16:00"];
 
-const WEEK_DAYS = [
-  { day: "الأحد", date: "15", active: true },
-  { day: "الإثنين", date: "16", active: true },
-  { day: "الثلاثاء", date: "17", active: false },
-  { day: "الأربعاء", date: "18", active: true },
-  { day: "الخميس", date: "19", active: true },
-  { day: "الجمعة", date: "20", active: false },
-  { day: "السبت", date: "21", active: false },
-];
-
-const TIME_SLOTS = ["09:00 ص", "10:00 ص", "10:30 ص", "01:00 م", "02:30 م", "04:00 م"];
+const deptColors = ["#3B82F6","#EF4444","#8B5CF6","#10B981","#F59E0B","#3B82F6"];
 
 export function DoctorsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDept, setSelectedDept] = useState("الكل");
-  const [selectedDoctor, setSelectedDoctor] = useState<typeof DOCTORS[0] | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState("16");
-  const [selectedTime, setSelectedTime] = useState("10:30 ص");
+  const { lang, dark, setLang, setDark, aiOpen, setAiOpen } = useHealPathStore();
+  const colors = dark ? theme.dark : theme.light;
+  const isRtl = lang === "ar";
+  const font = isRtl ? "'Cairo',sans-serif" : "'Inter',sans-serif";
 
-  const filteredDoctors = DOCTORS.filter((doc) => {
-    const matchesSearch = doc.name.includes(searchQuery) || doc.specialty.includes(searchQuery);
-    const matchesDept = selectedDept === "الكل" || doc.department === selectedDept;
-    return matchesSearch && matchesDept;
+  const [search, setSearch] = useState("");
+  const [dept, setDept] = useState(isRtl?"الكل":"All");
+  const [selectedDoc, setSelectedDoc] = useState<any>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selDate, setSelDate] = useState("16");
+  const [selTime, setSelTime] = useState("10:30");
+
+  const doctors = DOCTORS_DATA[lang];
+  const depts = lang==="ar" ? ["الكل","العظمية","الصدرية","الكلى","القلبية","العصبية"] : ["All","Orthopedics","Pulmonology","Nephrology","Cardiology","Neurology"];
+  const weekDays = lang==="ar" ? WEEK_DAYS_AR : WEEK_DAYS_EN;
+
+  const filtered = doctors.filter(d => {
+    const matchSearch = d.name.includes(search)||d.spec.includes(search);
+    const matchDept = dept===(lang==="ar"?"الكل":"All")||d.dept===dept;
+    return matchSearch && matchDept;
   });
 
-  const handleBookClick = (doctor: typeof DOCTORS[0]) => {
-    setSelectedDoctor(doctor);
-    setIsModalOpen(true);
-  };
-
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#1A1A2E] font-sans" dir="rtl">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-40 w-full bg-white border-b border-gray-100 shadow-sm">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#0066FF] flex items-center justify-center">
-              <span className="text-white font-bold text-lg leading-none">+</span>
-            </div>
-            <span className="font-bold text-xl tracking-tight text-[#1A1A2E]">HealPath</span>
-          </div>
-          
-          <div className="hidden md:flex items-center gap-8 font-medium text-sm text-gray-600">
-            <a href="#" className="hover:text-[#0066FF] transition-colors">الرئيسية</a>
-            <a href="#" className="hover:text-[#0066FF] transition-colors">مواعيدي</a>
-            <a href="#" className="text-[#0066FF] font-semibold border-b-2 border-[#0066FF] py-5">الأطباء</a>
-            <a href="#" className="hover:text-[#0066FF] transition-colors">النتائج الطبية</a>
-          </div>
+    <div dir={isRtl?"rtl":"ltr"} style={{ background:colors.bgSecondary, color:colors.text, minHeight:"100vh", fontFamily:font }}>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+      <UnifiedNavbar lang={lang} dark={dark} setLang={setLang} setDark={setDark} activePage="doctors" />
 
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="text-gray-500 rounded-full hover:bg-gray-100">
-              <Bell className="w-5 h-5" />
-            </Button>
-            <Avatar className="w-9 h-9 border border-gray-200">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>أ.م</AvatarFallback>
-            </Avatar>
-            <Button variant="ghost" size="icon" className="md:hidden text-gray-500">
-              <Menu className="w-5 h-5" />
-            </Button>
+      <main style={{ maxWidth:1200, margin:"0 auto", padding:"40px 24px" }}>
+        {/* Header */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:32, flexWrap:"wrap", gap:16 }}>
+          <div>
+            <h1 style={{ fontSize:32, fontWeight:800, color:colors.text, marginBottom:6 }}>{lang==="ar"?"أطباؤنا المتخصصون":"Our Specialist Doctors"}</h1>
+            <p style={{ color:colors.textSecondary, fontSize:14 }}>{lang==="ar"?"ابحث واحجز موعدك مع نخبة من أفضل الأطباء":"Search and book with our top specialists"}</p>
+          </div>
+          <div style={{ position:"relative" }}>
+            <Search size={16} color={colors.textSecondary} style={{ position:"absolute", top:"50%", transform:"translateY(-50%)", ...(isRtl?{right:14}:{left:14}) }} />
+            <input value={search} onChange={e=>setSearch(e.target.value)} placeholder={lang==="ar"?"ابحث باسم الطبيب أو التخصص...":"Search by name or specialty..."} style={{ background:colors.card, border:`1px solid ${colors.border}`, borderRadius:12, padding: isRtl?"10px 40px 10px 16px":"10px 16px 10px 40px", fontSize:14, color:colors.text, outline:"none", width:320, fontFamily:font }} />
           </div>
         </div>
-      </nav>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header Section */}
-        <div className="mb-8 space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-[#1A1A2E] mb-2">أطباؤنا المتخصصون</h1>
-              <p className="text-gray-500">ابحث واحجز موعدك مع نخبة من أفضل الأطباء</p>
-            </div>
-            
-            <div className="relative w-full md:w-96">
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
-              </div>
-              <Input
-                type="text"
-                placeholder="ابحث باسم الطبيب أو التخصص..."
-                className="pr-10 py-6 rounded-2xl border-gray-200 focus-visible:ring-[#0066FF] shadow-sm bg-white"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* Department Filters */}
-          <ScrollArea className="w-full whitespace-nowrap pb-2">
-            <div className="flex w-max space-x-2 space-x-reverse">
-              {DEPARTMENTS.map((dept) => (
-                <button
-                  key={dept}
-                  onClick={() => setSelectedDept(dept)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedDept === dept
-                      ? "bg-[#1A1A2E] text-white shadow-md"
-                      : "bg-white text-gray-600 border border-gray-200 hover:border-[#0066FF] hover:text-[#0066FF]"
-                  }`}
-                >
-                  {dept}
-                </button>
-              ))}
-            </div>
-            <ScrollBar orientation="horizontal" className="hidden" />
-          </ScrollArea>
+        {/* Dept Filter */}
+        <div style={{ display:"flex", gap:8, marginBottom:32, flexWrap:"wrap" }}>
+          {depts.map(d => (
+            <button key={d} onClick={() => setDept(d)} style={{ padding:"8px 18px", borderRadius:24, fontSize:13, fontWeight:600, cursor:"pointer", border: dept===d?"none":"1px solid "+colors.border, background: dept===d?"linear-gradient(135deg,#1A1A2E,#0F3460)":"transparent", color: dept===d?"white":colors.textSecondary, fontFamily:font, transition:"all 0.2s" }}>
+              {d}
+            </button>
+          ))}
         </div>
 
         {/* Doctors Grid */}
-        {filteredDoctors.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDoctors.map((doctor) => (
-              <Card key={doctor.id} className="border-none shadow-sm hover:shadow-md transition-shadow duration-300 bg-white rounded-3xl overflow-hidden flex flex-col group">
-                <CardContent className="p-6 flex-grow">
-                  <div className="flex items-start justify-between mb-4">
-                    <Avatar className="w-16 h-16 border-2 border-gray-50">
-                      <AvatarFallback className={`text-lg font-bold ${doctor.color}`}>
-                        {doctor.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <Badge variant="secondary" className="bg-blue-50 text-[#0066FF] hover:bg-blue-100 rounded-full px-3 py-1 text-xs font-medium flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {doctor.slotsCount} مواعيد متاحة
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <h3 className="font-bold text-lg text-[#1A1A2E] group-hover:text-[#0066FF] transition-colors">{doctor.name}</h3>
-                    <p className="text-sm text-gray-500 font-medium">{doctor.specialty}</p>
-                    
-                    <div className="flex items-center gap-4 pt-2 text-sm">
-                      <div className="flex items-center text-amber-500 font-medium">
-                        <Star className="w-4 h-4 fill-current mr-1" />
-                        <span className="mr-1">{doctor.rating}</span>
-                        <span className="text-gray-400 text-xs mr-1">({doctor.reviewsCount})</span>
-                      </div>
-                      <div className="flex items-center text-gray-500">
-                        <Award className="w-4 h-4 mr-1 opacity-70" />
-                        <span className="mr-1">{doctor.experience}</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-4 pt-0 border-t border-gray-50 mt-auto bg-gray-50/50">
-                  <Button 
-                    onClick={() => handleBookClick(doctor)}
-                    className="w-full bg-[#0066FF] hover:bg-blue-700 text-white rounded-xl py-6 font-medium shadow-sm hover:shadow transition-all duration-200"
-                  >
-                    احجز موعداً
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100">
-            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-gray-400" />
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:20 }}>
+          {filtered.map((doc,i) => (
+            <div key={doc.id} style={{ background:colors.card, border:`1px solid ${colors.border}`, borderRadius:20, overflow:"hidden", boxShadow: dark?"none":"0 2px 12px rgba(0,0,0,0.06)", display:"flex", flexDirection:"column" }}>
+              <div style={{ padding:24, flex:1 }}>
+                <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:16 }}>
+                  <div style={{ width:64, height:64, background:`linear-gradient(135deg,${deptColors[i]},${deptColors[i]}99)`, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:800, fontSize:18 }}>{doc.init}</div>
+                  <span style={{ background:dark?"rgba(0,102,255,0.15)":"#EFF6FF", color:"#0066FF", fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:20, display:"flex", alignItems:"center", gap:4 }}>
+                    <Clock size={11}/>{doc.slots} {lang==="ar"?"مواعيد":"slots"}
+                  </span>
+                </div>
+                <div style={{ fontWeight:800, fontSize:16, color:colors.text, marginBottom:4 }}>{doc.name}</div>
+                <div style={{ color:colors.textSecondary, fontSize:13, marginBottom:12 }}>{doc.spec}</div>
+                <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                  <span style={{ color:"#F59E0B", fontWeight:700, fontSize:13, display:"flex", alignItems:"center", gap:4 }}>
+                    <Star size={13} fill="#F59E0B"/> {doc.rating} <span style={{ color:colors.textSecondary, fontWeight:400 }}>({doc.reviews})</span>
+                  </span>
+                  <span style={{ color:colors.textSecondary, fontSize:12, display:"flex", alignItems:"center", gap:4 }}>
+                    <Award size={12}/>{doc.exp}
+                  </span>
+                </div>
+              </div>
+              <div style={{ padding:"12px 20px", borderTop:`1px solid ${colors.border}`, background:dark?"rgba(255,255,255,0.02)":colors.bgSecondary }}>
+                <button onClick={() => { setSelectedDoc(doc); setModalOpen(true); }} style={{ width:"100%", background:"linear-gradient(135deg,#0066FF,#0052CC)", color:"white", border:"none", padding:"11px", borderRadius:12, fontSize:14, fontWeight:700, cursor:"pointer", boxShadow:"0 4px 12px rgba(0,102,255,0.3)", fontFamily:font }}>
+                  {lang==="ar"?"احجز موعداً":"Book Appointment"}
+                </button>
+              </div>
             </div>
-            <h3 className="text-lg font-bold text-[#1A1A2E] mb-2">لا يوجد أطباء مطابقين</h3>
-            <p className="text-gray-500">حاول تغيير كلمات البحث أو الفلتر المستخدم</p>
-          </div>
-        )}
+          ))}
+        </div>
       </main>
 
-      {/* Floating AI Assistant Button */}
-      <button className="fixed bottom-6 right-6 w-14 h-14 bg-[#1A1A2E] hover:bg-gray-800 text-white rounded-full shadow-xl flex items-center justify-center transition-transform hover:scale-105 z-50 group">
-        <MessageCircle className="w-6 h-6" />
-        <span className="absolute right-16 bg-white text-[#1A1A2E] text-sm font-medium px-3 py-1.5 rounded-lg shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-          المساعد الذكي
-        </span>
-      </button>
-
       {/* Booking Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-md md:max-w-2xl p-0 overflow-hidden rounded-[2rem] border-none bg-white font-sans" dir="rtl">
-          {selectedDoctor && (
-            <>
-              <div className="bg-[#1A1A2E] text-white p-6 md:p-8 relative overflow-hidden">
-                <div className="absolute -left-10 -top-10 w-40 h-40 bg-[#0066FF] rounded-full blur-3xl opacity-20"></div>
-                <DialogHeader className="relative z-10 text-right">
-                  <DialogTitle className="text-transparent">حجز موعد</DialogTitle>
-                  <div className="flex flex-col md:flex-row gap-5 items-start">
-                    <Avatar className="w-20 h-20 md:w-24 md:h-24 border-4 border-white/10 shadow-lg">
-                      <AvatarFallback className={`text-2xl font-bold ${selectedDoctor.color}`}>
-                        {selectedDoctor.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-2">
-                      <h2 className="text-2xl font-bold">{selectedDoctor.name}</h2>
-                      <p className="text-blue-200 font-medium">{selectedDoctor.specialty}</p>
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-gray-300 mt-2">
-                        <span className="flex items-center bg-white/10 px-2 py-1 rounded-md">
-                          <Award className="w-4 h-4 ml-1.5" />
-                          {selectedDoctor.experience}
-                        </span>
-                        <span className="flex items-center bg-white/10 px-2 py-1 rounded-md">
-                          <Star className="w-4 h-4 ml-1.5 text-amber-400" />
-                          {selectedDoctor.rating} تقييم
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </DialogHeader>
-              </div>
-
-              <div className="p-6 md:p-8 space-y-8">
-                {/* About */}
+      {modalOpen && selectedDoc && (
+        <div style={{ position:"fixed", inset:0, zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <div onClick={() => setModalOpen(false)} style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.6)", backdropFilter:"blur(4px)" }} />
+          <div style={{ position:"relative", background:colors.card, borderRadius:24, width:"100%", maxWidth:620, maxHeight:"90vh", overflowY:"auto", boxShadow:"0 24px 64px rgba(0,0,0,0.4)" }}>
+            {/* Modal Header */}
+            <div style={{ background:"linear-gradient(135deg,#1A1A2E,#0F3460)", padding:"28px 28px 24px", borderRadius:"24px 24px 0 0", position:"relative" }}>
+              <button onClick={() => setModalOpen(false)} style={{ position:"absolute", top:16, ...(isRtl?{left:16}:{right:16}), background:"rgba(255,255,255,0.15)", border:"none", color:"white", width:32, height:32, borderRadius:8, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                <X size={16}/>
+              </button>
+              <div style={{ display:"flex", gap:20, alignItems:"center" }}>
+                <div style={{ width:72, height:72, background:"linear-gradient(135deg,#0066FF,#00A3FF)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"white", fontWeight:800, fontSize:22, flexShrink:0 }}>{selectedDoc.init}</div>
                 <div>
-                  <h3 className="font-bold text-[#1A1A2E] mb-3 flex items-center gap-2">
-                    <User className="w-5 h-5 text-[#0066FF]" />
-                    نبذة عن الطبيب
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed bg-gray-50 p-4 rounded-2xl">
-                    {selectedDoctor.bio}
-                  </p>
-                </div>
-
-                {/* Schedule */}
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-[#1A1A2E] flex items-center gap-2">
-                      <CalendarIcon className="w-5 h-5 text-[#0066FF]" />
-                      اختر اليوم
-                    </h3>
-                    <span className="text-sm font-medium text-gray-500">سبتمبر 2023</span>
+                  <div style={{ color:"white", fontWeight:800, fontSize:22, marginBottom:4 }}>{selectedDoc.name}</div>
+                  <div style={{ color:"#93C5FD", fontSize:14, marginBottom:8 }}>{selectedDoc.spec}</div>
+                  <div style={{ display:"flex", gap:8 }}>
+                    <span style={{ background:"rgba(255,255,255,0.15)", color:"white", fontSize:12, padding:"4px 10px", borderRadius:20, display:"flex", alignItems:"center", gap:4 }}><Award size={11}/>{selectedDoc.exp}</span>
+                    <span style={{ background:"rgba(255,255,255,0.15)", color:"white", fontSize:12, padding:"4px 10px", borderRadius:20, display:"flex", alignItems:"center", gap:4 }}><Star size={11} fill="white"/>{selectedDoc.rating}</span>
                   </div>
-                  
-                  <div className="flex gap-2 md:gap-3 overflow-x-auto pb-2 hide-scrollbar">
-                    {WEEK_DAYS.map((day, idx) => (
-                      <button
-                        key={idx}
-                        disabled={!day.active}
-                        onClick={() => setSelectedDate(day.date)}
-                        className={`flex flex-col items-center justify-center min-w-[70px] h-20 rounded-2xl transition-all ${
-                          !day.active 
-                            ? "opacity-50 cursor-not-allowed bg-gray-50 text-gray-400"
-                            : selectedDate === day.date
-                              ? "bg-[#0066FF] text-white shadow-md shadow-blue-500/20 scale-105 transform"
-                              : "bg-white border border-gray-200 text-gray-700 hover:border-[#0066FF]"
-                        }`}
-                      >
-                        <span className="text-xs font-medium mb-1">{day.day}</span>
-                        <span className="text-xl font-bold">{day.date}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Time Slots */}
-                <div>
-                  <h3 className="font-bold text-[#1A1A2E] mb-4 flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-[#0066FF]" />
-                    اختر الوقت
-                  </h3>
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-                    {TIME_SLOTS.map((time, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelectedTime(time)}
-                        className={`py-3 px-2 rounded-xl text-sm font-medium transition-all ${
-                          selectedTime === time
-                            ? "bg-[#1A1A2E] text-white shadow-md"
-                            : "bg-gray-50 text-gray-700 border border-transparent hover:border-gray-300"
-                        }`}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Action */}
-                <div className="pt-4 border-t border-gray-100">
-                  <Button className="w-full bg-[#0066FF] hover:bg-blue-700 text-white rounded-2xl py-7 text-lg font-bold shadow-lg shadow-blue-500/20 transition-transform active:scale-[0.98]">
-                    تأكيد الحجز — {selectedDate} سبتمبر، {selectedTime}
-                  </Button>
-                  <p className="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" />
-                    الدفع يتم في العيادة
-                  </p>
                 </div>
               </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+            </div>
+
+            <div style={{ padding:28 }}>
+              {/* Bio */}
+              <div style={{ background:colors.bgSecondary, border:`1px solid ${colors.border}`, borderRadius:14, padding:16, marginBottom:24 }}>
+                <div style={{ fontWeight:700, fontSize:14, color:colors.text, marginBottom:8 }}>{lang==="ar"?"نبذة عن الطبيب":"About the Doctor"}</div>
+                <p style={{ fontSize:13, color:colors.textSecondary, lineHeight:1.7 }}>{selectedDoc.bio}</p>
+              </div>
+
+              {/* Date Picker */}
+              <div style={{ marginBottom:24 }}>
+                <div style={{ fontWeight:700, fontSize:15, color:colors.text, marginBottom:14, display:"flex", alignItems:"center", gap:8 }}>
+                  <Calendar size={16} color="#0066FF"/>{lang==="ar"?"اختر اليوم":"Select Day"}
+                </div>
+                <div style={{ display:"flex", gap:8, overflowX:"auto", paddingBottom:4 }}>
+                  {weekDays.map((day,i) => (
+                    <button key={i} disabled={!day.active} onClick={() => day.active && setSelDate(day.date)} style={{ minWidth:70, height:76, borderRadius:16, cursor:day.active?"pointer":"not-allowed", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:4, background: !day.active?colors.bgSecondary: selDate===day.date?"linear-gradient(135deg,#0066FF,#0052CC)":colors.card, opacity: day.active?1:0.4, border:`1px solid ${selDate===day.date?"transparent":colors.border}`, boxShadow: selDate===day.date?"0 4px 12px rgba(0,102,255,0.4)":"none", flexShrink:0 }}>
+                      <span style={{ fontSize:11, fontWeight:600, color: selDate===day.date?"white":colors.textSecondary }}>{day.d}</span>
+                      <span style={{ fontSize:20, fontWeight:800, color: selDate===day.date?"white":colors.text }}>{day.date}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Time Slots */}
+              <div style={{ marginBottom:28 }}>
+                <div style={{ fontWeight:700, fontSize:15, color:colors.text, marginBottom:14, display:"flex", alignItems:"center", gap:8 }}>
+                  <Clock size={16} color="#0066FF"/>{lang==="ar"?"اختر الوقت":"Select Time"}
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10 }}>
+                  {TIMES.map((t,i) => (
+                    <button key={i} onClick={() => setSelTime(t)} style={{ padding:"12px", borderRadius:12, fontSize:14, fontWeight:600, cursor:"pointer", border:"none", background: selTime===t?"linear-gradient(135deg,#1A1A2E,#0F3460)":colors.bgSecondary, color: selTime===t?"white":colors.text, fontFamily:font, boxShadow: selTime===t?"0 4px 12px rgba(0,0,0,0.2)":"none" }}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Confirm Button */}
+              <button onClick={() => setModalOpen(false)} style={{ width:"100%", background:"linear-gradient(135deg,#0066FF,#0052CC)", color:"white", border:"none", padding:"16px", borderRadius:14, fontSize:16, fontWeight:800, cursor:"pointer", boxShadow:"0 6px 20px rgba(0,102,255,0.4)", fontFamily:font }}>
+                {lang==="ar"?`تأكيد الحجز — ${selDate} مايو، الساعة ${selTime}`:`Confirm Booking — May ${selDate} at ${selTime}`}
+              </button>
+              <p style={{ textAlign:"center", fontSize:12, color:colors.textSecondary, marginTop:10, display:"flex", alignItems:"center", justifyContent:"center", gap:4 }}>
+                <CheckCircle2 size={12}/>{lang==="ar"?"الدفع يتم في العيادة":"Payment at clinic"}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <UnifiedAIFloat lang={lang} dark={dark} aiOpen={aiOpen} setAiOpen={setAiOpen} colors={colors} />
     </div>
   );
 }
