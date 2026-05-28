@@ -6,3 +6,9 @@ id = "w-ZovQiV7aAsy29gOilrw"
 uri = "file://healpath_standalone.zip"
 type = "unspecified"
 title = "HealPath — 7 ملفات HTML مستقلة (33KB)"
+
+[[outputs]]
+id = "2vHys0eAHpzXA-gmmABTV"
+uri = "file://HealPath_Document.zip"
+type = "unspecified"
+title = "HealPath — وثيقة الدراسة والخطة (HTML احترافي)"

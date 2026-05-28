@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealPath — وثيقة المشروع الكاملة</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --blue:#0066FF; --blue2:#0052CC; --blue3:#00A3FF;
+  --navy:#1A1A2E; --navy2:#0F3460; --navy3:#0D1825;
+  --bg:#F4F7FF; --bg2:#E8F0FF; --card:#FFFFFF;
+  --text:#1A1A2E; --text2:#4B5563; --text3:#9CA3AF;
+  --border:#DDE8FF; --border2:#C7D7FF;
+  --green:#10B981; --amber:#F59E0B; --red:#EF4444; --purple:#8B5CF6;
+  --radius:14px; --radius-sm:8px; --shadow:0 2px 16px rgba(0,102,255,.08);
+  --shadow-lg:0 8px 40px rgba(0,102,255,.14);
+}
+[data-dark="true"] {
+  --bg:#0B111E; --bg2:#111827; --card:#141E2E;
+  --text:#E8F0FE; --text2:#94A3B8; --text3:#4B5563;
+  --border:#1E2D42; --border2:#253348; --shadow:0 2px 16px rgba(0,0,0,.4);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.5);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;line-height:1.7;transition:background .3s,color .3s}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,102,255,.3);border-radius:3px}
+
+/* ── TOP HEADER ── */
+.site-header{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  position:sticky;top:0;z-index:200;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  box-shadow:0 2px 20px rgba(0,0,0,.3);
+}
+.header-inner{
+  max-width:1160px;margin:0 auto;padding:0 28px;
+  height:60px;display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--blue),var(--blue3));
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+}
+.logo-name{color:white;font-weight:800;font-size:17px;line-height:1}
+.logo-tag{color:#60A5FA;font-size:10px;font-weight:500}
+
+.header-tabs{display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:10px;padding:4px}
+.htab{
+  padding:6px 18px;border-radius:7px;border:none;cursor:pointer;
+  font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;
+  background:transparent;color:rgba(255,255,255,.55);transition:all .2s;
+}
+.htab.active{background:rgba(0,102,255,.8);color:white;box-shadow:0 2px 10px rgba(0,102,255,.4)}
+.htab:hover:not(.active){color:white;background:rgba(255,255,255,.1)}
+
+.header-actions{display:flex;gap:8px;align-items:center}
+.btn-icon{
+  width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.08);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:white;
+  transition:background .2s;
+}
+.btn-icon:hover{background:rgba(255,255,255,.15)}
+.btn-print{
+  display:flex;align-items:center;gap:6px;padding:7px 14px;
+  background:rgba(0,102,255,.8);border:none;border-radius:8px;
+  color:white;font-family:'Cairo',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;transition:background .2s;
+}
+.btn-print:hover{background:var(--blue)}
+
+/* ── LAYOUT ── */
+.layout{max-width:1160px;margin:0 auto;padding:32px 28px 80px;display:flex;gap:28px;align-items:flex-start}
+
+/* ── SIDEBAR TOC ── */
+.toc{
+  width:240px;flex-shrink:0;position:sticky;top:76px;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px;box-shadow:var(--shadow);
+}
+.toc-title{font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px}
+.toc-link{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:8px;
+  font-size:12.5px;font-weight:600;color:var(--text2);
+  text-decoration:none;transition:all .18s;margin-bottom:2px;
+}
+.toc-link:hover{background:var(--bg2);color:var(--blue)}
+.toc-link.active{background:rgba(0,102,255,.1);color:var(--blue)}
+.toc-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);flex-shrink:0;transition:background .2s}
+.toc-link.active .toc-dot{background:var(--blue)}
+.toc-divider{height:1px;background:var(--border);margin:10px 0}
+
+/* ── MAIN CONTENT ── */
+.main{flex:1;min-width:0}
+.doc-section{display:none}
+.doc-section.active{display:block}
+
+/* ── HERO ── */
+.doc-hero{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,#0F2350 100%);
+  border-radius:20px;padding:40px 36px;margin-bottom:28px;position:relative;overflow:hidden;
+}
+.doc-hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,102,255,.07) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,102,255,.07) 1px,transparent 1px);
+  background-size:32px 32px;pointer-events:none;
+}
+.doc-hero::after{
+  content:'';position:absolute;top:-60px;left:-60px;
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,102,255,.15),transparent 70%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(0,102,255,.2);border:1px solid rgba(0,102,255,.35);
+  border-radius:20px;padding:5px 14px;margin-bottom:18px;
+}
+.hero-badge span{color:#60A5FA;font-size:12px;font-weight:700}
+.hero-title{color:white;font-size:30px;font-weight:900;line-height:1.25;margin-bottom:10px;position:relative}
+.hero-sub{color:#94A3B8;font-size:14px;line-height:1.8;max-width:560px;position:relative}
+.hero-meta{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;position:relative;
+}
+.meta-chip{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:5px 14px;
+}
+.meta-chip span{color:rgba(255,255,255,.7);font-size:12px;font-weight:600}
+.meta-chip strong{color:white;font-size:12px}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:32px}
+.section-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:20px;font-weight:800;margin-bottom:18px;padding-bottom:12px;
+  border-bottom:2px solid var(--border);
+}
+.section-num{
+  width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--blue2));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:white;font-size:13px;font-weight:800;flex-shrink:0;
+}
+.section-num.green{background:linear-gradient(135deg,#10B981,#059669)}
+.section-num.purple{background:linear-gradient(135deg,#8B5CF6,#6D28D9)}
+.section-num.amber{background:linear-gradient(135deg,#F59E0B,#D97706)}
+.section-num.red{background:linear-gradient(135deg,#EF4444,#DC2626)}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead tr{background:linear-gradient(135deg,var(--navy),var(--navy2))}
+thead th{padding:12px 16px;color:white;font-weight:700;text-align:right;font-size:12.5px;letter-spacing:.02em}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:hover{background:var(--bg2)}
+tbody tr:last-child{border-bottom:none}
+td{padding:11px 16px;color:var(--text);vertical-align:middle}
+td strong{color:var(--blue);font-weight:700}
+td code{background:var(--bg2);border:1px solid var(--border);padding:2px 7px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--blue)}
+
+/* ── CARDS ── */
+.cards{display:grid;gap:16px}
+.cards-2{grid-template-columns:repeat(2,1fr)}
+.cards-3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s}
+.card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
+.card-title{font-weight:800;font-size:14px;margin-bottom:6px}
+.card-desc{color:var(--text2);font-size:13px;line-height:1.65}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700}
+.badge-blue{background:rgba(0,102,255,.12);color:var(--blue)}
+.badge-green{background:rgba(16,185,129,.12);color:#059669}
+.badge-amber{background:rgba(245,158,11,.12);color:#D97706}
+.badge-red{background:rgba(239,68,68,.12);color:#DC2626}
+.badge-purple{background:rgba(139,92,246,.12);color:#7C3AED}
+.badge-navy{background:rgba(26,26,46,.12);color:var(--navy);border:1px solid var(--border)}
+[data-dark="true"] .badge-navy{background:rgba(255,255,255,.08);color:#CBD5E1}
+
+/* ── CODE BLOCKS ── */
+.code-block{
+  background:var(--navy3);border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--radius);overflow:hidden;margin:16px 0;
+}
+.code-header{
+  background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.07);
+  padding:10px 16px;display:flex;align-items:center;justify-content:space-between;
+}
+.code-lang{color:#60A5FA;font-size:11.5px;font-weight:700;font-family:'IBM Plex Mono',monospace}
+.code-body{padding:18px;overflow-x:auto}
+.code-body pre{color:#E2E8F0;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.75;white-space:pre}
+.kw{color:#60A5FA} .str{color:#86EFAC} .cm{color:#475569} .num{color:#FCA5A5} .key{color:#C4B5FD}
+
+/* ── PHASE TIMELINE ── */
+.timeline{position:relative;padding-right:28px}
+.timeline::before{
+  content:'';position:absolute;right:10px;top:0;bottom:0;
+  width:2px;background:linear-gradient(to bottom,var(--blue),var(--blue2),transparent);
+}
+.phase{position:relative;margin-bottom:28px}
+.phase-dot{
+  position:absolute;right:-22px;top:18px;
+  width:16px;height:16px;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue3));
+  border:3px solid var(--bg);box-shadow:0 0 0 2px var(--blue);
+}
+.phase-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.phase-header{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.phase-num{
+  background:rgba(0,102,255,.4);border:1px solid rgba(0,102,255,.5);
+  border-radius:8px;padding:4px 10px;color:#60A5FA;font-size:11px;font-weight:800;
+  font-family:'IBM Plex Mono',monospace;white-space:nowrap;
+}
+.phase-title{color:white;font-weight:800;font-size:15px}
+.phase-dur{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.1);border-radius:20px;padding:4px 12px;white-space:nowrap;
+}
+.phase-dur span{color:rgba(255,255,255,.6);font-size:11px;font-weight:600}
+.phase-body{padding:20px}
+.task-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.task-item{
+  display:flex;align-items:flex-start;gap:9px;
+  font-size:13px;color:var(--text2);
+}
+.task-check{
+  width:18px;height:18px;border-radius:5px;
+  background:rgba(0,102,255,.1);border:1.5px solid rgba(0,102,255,.3);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;
+}
+.task-check svg{opacity:.4}
+.section-tag{
+  display:inline-block;font-size:11px;font-weight:700;
+  padding:2px 8px;border-radius:4px;margin-bottom:6px;margin-top:12px;
+}
+.tag-be{background:rgba(16,185,129,.12);color:#059669}
+.tag-fe{background:rgba(0,102,255,.12);color:var(--blue)}
+.done-badge{
+  padding:3px 10px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.25);
+  border-radius:20px;color:#10B981;font-size:11px;font-weight:700;white-space:nowrap;
+}
+
+/* ── SWOT ── */
+.swot{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+.swot-cell{padding:22px}
+.swot-cell:nth-child(1){background:rgba(16,185,129,.06);border-bottom:1px solid var(--border);border-left:1px solid var(--border)}
+.swot-cell:nth-child(2){background:rgba(239,68,68,.06);border-bottom:1px solid var(--border)}
+.swot-cell:nth-child(3){background:rgba(0,102,255,.06);border-left:1px solid var(--border)}
+.swot-cell:nth-child(4){background:rgba(245,158,11,.06)}
+.swot-label{font-weight:800;font-size:13px;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.swot-items{list-style:none;display:flex;flex-direction:column;gap:5px}
+.swot-items li{font-size:12.5px;color:var(--text2);display:flex;align-items:flex-start;gap:6px}
+.swot-items li::before{content:'•';font-weight:800;flex-shrink:0;margin-top:2px}
+
+/* ── STATS ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:18px;text-align:center;box-shadow:var(--shadow);
+}
+.stat-val{font-size:28px;font-weight:900;color:var(--blue)}
+.stat-label{font-size:12px;color:var(--text2);margin-top:4px;font-weight:600}
+
+/* ── SCHEMA ── */
+.schema-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.schema-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:16px;box-shadow:var(--shadow);
+}
+.schema-name{
+  display:flex;align-items:center;gap:7px;
+  font-weight:800;font-size:13px;color:var(--text);margin-bottom:10px;
+  padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.schema-name span{color:#60A5FA;font-family:'IBM Plex Mono',monospace;font-size:12px}
+.schema-fields{list-style:none;display:flex;flex-direction:column;gap:4px}
+.schema-field{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;color:var(--text2);
+}
+.field-name{font-family:'IBM Plex Mono',monospace;color:#86EFAC;font-size:11.5px}
+.field-type{font-family:'IBM Plex Mono',monospace;color:#FCA5A5;font-size:11px}
+.field-pk{font-family:'IBM Plex Mono',monospace;color:var(--blue);font-size:11px}
+.field-fk{font-family:'IBM Plex Mono',monospace;color:#C4B5FD;font-size:11px}
+
+/* ── TIMELINE TABLE ── */
+.gantt{width:100%;border-collapse:collapse;border-radius:var(--radius);overflow:hidden;font-size:13px}
+.gantt thead tr{background:linear-gradient(135deg,var(--navy),var(--navy2))}
+.gantt thead th{color:white;padding:12px 16px;font-weight:700;text-align:right}
+.gantt tbody tr{border-bottom:1px solid var(--border)}
+.gantt tbody tr:hover{background:var(--bg2)}
+.gantt td{padding:11px 16px}
+
+/* ── COMPARISON ── */
+.compare-table th:first-child{min-width:180px}
+.winner{color:var(--green);font-weight:700}
+.loser{color:var(--text3)}
+
+/* ── UTILITY ── */
+.info-box{
+  background:rgba(0,102,255,.06);border:1px solid rgba(0,102,255,.2);
+  border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text2);
+  display:flex;align-items:flex-start;gap:9px;margin:16px 0;
+}
+.warn-box{
+  background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);
+  border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text2);
+  display:flex;align-items:flex-start;gap:9px;margin:16px 0;
+}
+.divider{height:1px;background:var(--border);margin:28px 0}
+.text-blue{color:var(--blue)}
+.font-mono{font-family:'IBM Plex Mono',monospace}
+.mt-4{margin-top:16px}
+.mb-2{margin-bottom:8px}
+
+/* ── PRINT ── */
+@media print {
+  .site-header .header-tabs,.header-actions,.toc{display:none!important}
+  .layout{display:block;padding:0}
+  .main,.doc-section{display:block!important}
+  .doc-hero{border-radius:0;background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .phase-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  thead tr{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .section{page-break-inside:avoid}
+  body{font-size:12px}
+}
+
+@media (max-width: 900px) {
+  .cards-3{grid-template-columns:repeat(2,1fr)}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .schema-grid{grid-template-columns:1fr}
+  .toc{display:none}
+  .layout{padding:16px}
+}
+@media (max-width: 600px) {
+  .cards-2,.cards-3{grid-template-columns:1fr}
+  .swot{grid-template-columns:1fr}
+  .swot-cell:nth-child(1),.swot-cell:nth-child(3){border-left:none}
+  .header-inner{padding:0 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════ HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="20" height="14" viewBox="0 0 22 16" fill="none">
+          <path d="M1 8 L4 8 L6 3 L8 13 L10 6 L12 10 L14 8 L21 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-name">HealPath</div>
+        <div class="logo-tag">وثيقة المشروع الكاملة</div>
+      </div>
+    </div>
+
+    <div class="header-tabs">
+      <button class="htab active" onclick="switchTab('study',this)">📚 دراسة المشروع</button>
+      <button class="htab" onclick="switchTab('plan',this)">🗺️ خطة التنفيذ</button>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-icon" onclick="toggleDark()" title="وضع داكن/فاتح" id="darkBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+        طباعة / PDF
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════ LAYOUT -->
+<div class="layout">
+
+  <!-- TOC -->
+  <nav class="toc" id="tocNav">
+    <div class="toc-title" id="tocTitle">فهرس الدراسة</div>
+    <div id="tocLinks"></div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ════════════════════════════ STUDY DOC -->
+    <section class="doc-section active" id="sec-study">
+
+      <div class="doc-hero">
+        <div class="hero-badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+          <span>وثيقة الدراسة — Study Document</span>
+        </div>
+        <h1 class="hero-title">دراسة مشروع HealPath<br>تطبيق الويب للمستشفى الذكي</h1>
+        <p class="hero-sub">دراسة شاملة تغطي رؤية المشروع، المستخدمين، الميزات، نموذج الإيراد، تحليل السوق السوري، ومعمارية واجهة المستخدم. مايو 2026.</p>
+        <div class="hero-meta">
+          <div class="meta-chip"><span>صاحب المشروع</span><strong>إبراهيم</strong></div>
+          <div class="meta-chip"><span>السوق</span><strong>🇸🇾 سوريا</strong></div>
+          <div class="meta-chip"><span>النوع</span><strong>Web App + Docker</strong></div>
+          <div class="meta-chip"><span>الحالة</span><strong>✅ مكتملة</strong></div>
+          <div class="meta-chip"><span>التاريخ</span><strong>مايو 2026</strong></div>
+        </div>
+      </div>
+
+      <!-- 1. نظرة عامة -->
+      <div class="section" id="s1-overview">
+        <div class="section-title"><div class="section-num">1</div>نظرة عامة على المشروع</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>البند</th><th>التفاصيل</th></tr></thead>
+            <tbody>
+              <tr><td><strong>الاسم التجاري</strong></td><td><span class="badge badge-blue">HealPath — مسار الشفاء</span></td></tr>
+              <tr><td><strong>المجال</strong></td><td>الرعاية الصحية الرقمية — HealthTech</td></tr>
+              <tr><td><strong>الهدف الرئيسي</strong></td><td>تسهيل خدمات المرضى والمستشفى بالاعتماد على الذكاء الاصطناعي</td></tr>
+              <tr><td><strong>نوع المنتج</strong></td><td>تطبيق ويب (Web Application) — ليس مجرد موقع</td></tr>
+              <tr><td><strong>نطاق الخدمة</strong></td><td>مستشفى واحد (تطبيق مخصص لمستشفى بعينه)</td></tr>
+              <tr><td><strong>السوق المستهدف</strong></td><td>🇸🇾 سوريا — في المرحلة الأولى</td></tr>
+              <tr><td><strong>البنية التقنية</strong></td><td><code>Docker</code> حاوية مكتفية ذاتياً — كل البيانات داخل التطبيق</td></tr>
+              <tr><td><strong>هيكل المستخدمين</strong></td><td>لوحة تحكم المستشفى (4 أدوار) + بوابة للمرضى</td></tr>
+              <tr><td><strong>نموذج الإيرادات</strong></td><td>عمولة على كل حجز وعلى كل عملية بيع دواء</td></tr>
+              <tr><td><strong>الجدول الزمني</strong></td><td>~14 أسبوعاً — الجودة أهم من السرعة</td></tr>
+              <tr><td><strong>فريق التنفيذ</strong></td><td>إبراهيم (التنفيذ الذاتي)</td></tr>
+              <tr><td><strong>نسخة الإطلاق</strong></td><td>Full Launch — جميع الميزات دفعة واحدة</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. Web App vs Website -->
+      <div class="section" id="s1-concept">
+        <div class="section-title"><div class="section-num">2</div>المفهوم التقني — Web App vs Website</div>
+        <div class="info-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>HealPath <strong>ليس موقعاً إلكترونياً</strong> — بل تطبيق ويب متكامل بتجربة Single Page App وحالة مستخدم كاملة وبيانات محفوظة داخل Docker.</span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>الخاصية</th><th>الموقع التقليدي</th><th>HealPath</th></tr></thead>
+            <tbody>
+              <tr><td><strong>التفاعلية</strong></td><td class="loser">صفحات ثابتة</td><td class="winner">✓ تجربة تفاعلية كاملة بدون إعادة تحميل</td></tr>
+              <tr><td><strong>حالة المستخدم</strong></td><td class="loser">محدودة</td><td class="winner">✓ Session كامل + ملف شخصي + إشعارات حية</td></tr>
+              <tr><td><strong>البيانات</strong></td><td class="loser">خارجية</td><td class="winner">✓ محفوظة داخل Docker Volume محلي</td></tr>
+              <tr><td><strong>الأداء</strong></td><td class="loser">تحميل صفحات</td><td class="winner">✓ Single Page App — سرعة تطبيق أصيل</td></tr>
+              <tr><td><strong>النشر</strong></td><td class="loser">استضافة تقليدية</td><td class="winner">✓ Docker Container — قابل للنشر أي مكان</td></tr>
+              <tr><td><strong>الاستقلالية</strong></td><td class="loser">يعتمد على خدمات خارجية</td><td class="winner">✓ مكتفٍ ذاتياً — DB + ملفات داخله</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. Brand Identity -->
+      <div class="section" id="s1-brand">
+        <div class="section-title"><div class="section-num green">3</div>الهوية البصرية — Brand Identity</div>
+        <div class="cards cards-3">
+          <div class="card">
+            <div class="card-icon" style="background:rgba(0,102,255,.1)">🎨</div>
+            <div class="card-title">الألوان الأساسية</div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#0066FF;box-shadow:0 2px 8px rgba(0,102,255,.4)"></div>
+              <div style="width:32px;height:32px;border-radius:8px;background:#1A1A2E"></div>
+              <div style="width:32px;height:32px;border-radius:8px;background:#00A3FF"></div>
+              <div style="width:32px;height:32px;border-radius:8px;background:#60A5FA"></div>
+            </div>
+            <div class="card-desc">أزرق إلكتريك #0066FF + رمادي غامق #1A1A2E + تدرجات زرقاء</div>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:rgba(139,92,246,.1)">✍️</div>
+            <div class="card-title">الخطوط</div>
+            <div class="card-desc">
+              <strong style="font-family:'Cairo',sans-serif;font-size:16px;color:var(--blue)">Cairo</strong> — للعربية<br>
+              <strong style="font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text)">Inter</strong> — للإنجليزية<br>
+              خطوط حديثة وواضحة مع دعم RTL/LTR كامل
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:rgba(16,185,129,.1)">💫</div>
+            <div class="card-title">الروح التصميمية</div>
+            <div class="card-desc">تقني حديث ومستقبلي — يوحي بالذكاء الاصطناعي والتقنية الطبية المتقدمة والموثوقية</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Users -->
+      <div class="section" id="s1-users">
+        <div class="section-title"><div class="section-num purple">4</div>هيكل المنصة والمستخدمون</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+              <div style="width:38px;height:38px;background:linear-gradient(135deg,#0066FF,#00A3FF);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">🏥</div>
+              <div>
+                <div style="font-weight:800;font-size:14px">بوابة المريض</div>
+                <div style="font-size:11px;color:var(--text2)">Patient Portal</div>
+              </div>
+            </div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
+              <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>تسجيل بالبريد الإلكتروني + كلمة المرور</li>
+              <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>حجز مواعيد الأطباء</li>
+              <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>الصيدلية الإلكترونية</li>
+              <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>المساعد الطبي الذكي</li>
+              <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>المحتوى التثقيفي الصحي</li>
+              <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>التقديم على الشواغر الوظيفية</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+              <div style="width:38px;height:38px;background:linear-gradient(135deg,#1A1A2E,#0F3460);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">⚙️</div>
+              <div>
+                <div style="font-weight:800;font-size:14px">لوحة تحكم المستشفى</div>
+                <div style="font-size:11px;color:var(--text2)">Hospital Dashboard — 4 أدوار</div>
+              </div>
+            </div>
+            <div class="tbl-wrap" style="border-radius:8px">
+              <table>
+                <thead><tr><th>الدور</th><th>الصلاحيات</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="badge badge-red">المدير العام</span></td><td style="font-size:12px">كامل الصلاحيات</td></tr>
+                  <tr><td><span class="badge badge-blue">الطبيب</span></td><td style="font-size:12px">حجوزاته الخاصة فقط</td></tr>
+                  <tr><td><span class="badge badge-green">مدير الصيدلية</span></td><td style="font-size:12px">المخزون + الطلبات</td></tr>
+                  <tr><td><span class="badge badge-purple">مسؤول التوظيف</span></td><td style="font-size:12px">الشواغر + الطلبات</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Departments -->
+      <div class="section" id="s1-depts">
+        <div class="section-title"><div class="section-num amber">5</div>الأقسام الطبية</div>
+        <div class="cards cards-3" style="margin-bottom:12px">
+          <div class="card"><div class="card-icon" style="background:rgba(59,130,246,.1);font-size:22px">🦴</div><div class="card-title">قسم العظمية</div><div class="card-desc">أمراض وجراحات العظام والمفاصل والعمود الفقري</div></div>
+          <div class="card"><div class="card-icon" style="background:rgba(16,185,129,.1);font-size:22px">🫁</div><div class="card-title">قسم الصدرية</div><div class="card-desc">أمراض الرئتين والجهاز التنفسي والصدر</div></div>
+          <div class="card"><div class="card-icon" style="background:rgba(139,92,246,.1);font-size:22px">🫘</div><div class="card-title">قسم الكلى</div><div class="card-desc">أمراض الكلى وأمراض المسالك البولية</div></div>
+          <div class="card"><div class="card-icon" style="background:rgba(239,68,68,.1);font-size:22px">❤️</div><div class="card-title">قسم القلبية</div><div class="card-desc">أمراض القلب والأوعية الدموية</div></div>
+          <div class="card"><div class="card-icon" style="background:rgba(245,158,11,.1);font-size:22px">🧠</div><div class="card-title">قسم العصبية</div><div class="card-desc">أمراض الجهاز العصبي المركزي والمحيطي</div></div>
+          <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:rgba(0,102,255,.03)">
+            <div style="font-size:24px">➕</div>
+            <div class="card-title" style="text-align:center;color:var(--text2)">قابل للتوسع</div>
+            <div class="card-desc" style="text-align:center">يُضاف من لوحة التحكم دون تعديل الكود</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Features -->
+      <div class="section" id="s1-features">
+        <div class="section-title"><div class="section-num">6</div>الميزات الكاملة</div>
+
+        <div style="margin-bottom:20px">
+          <div style="font-weight:800;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span class="badge badge-blue">6.1</span> إدارة حسابات المرضى والحجوزات
+          </div>
+          <div class="cards cards-2">
+            <div class="card">
+              <ul class="task-list">
+                <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>تسجيل: بريد + كلمة مرور + اسم + هاتف</li>
+                <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>ملف المريض الشخصي (التاريخ المرضي)</li>
+                <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>عرض الأطباء مع صورهم وخبراتهم</li>
+              </ul>
+            </div>
+            <div class="card">
+              <ul class="task-list">
+                <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>حجز موعد مع الطبيب المختار</li>
+                <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>الدفع نقدي عند الوصول (المرحلة الأولى)</li>
+                <li class="task-item"><div class="task-check"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#0066FF" stroke-width="2" stroke-linecap="round"><path d="m2 6 3 3 5-5"/></svg></div>إشعارات تذكير عبر البريد الإلكتروني</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Feature -->
+        <div style="margin-bottom:20px">
+          <div style="font-weight:800;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            <span class="badge badge-purple">6.3</span> المساعد الطبي الذكي — الميزة المحورية ⭐
+          </div>
+          <div class="cards cards-2">
+            <div class="card" style="border-color:rgba(0,102,255,.25);background:rgba(0,102,255,.03)">
+              <div style="font-weight:800;font-size:13px;color:var(--blue);margin-bottom:10px">المسار 1 — تحليل الأعراض</div>
+              <div class="code-block" style="margin:0">
+                <div class="code-header"><span class="code-lang">Flow</span></div>
+                <div class="code-body"><pre><span class="cm">المريض:</span> <span class="str">"عندي ألم في الركبة"</span>
+       ↓ GPT-4
+<span class="kw">الرد:</span>   قسم العظمية ← توجيه
+        + زر "احجز موعداً الآن"
+        ⚠️ تحليل استرشادي فقط</pre></div>
+              </div>
+            </div>
+            <div class="card" style="border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.03)">
+              <div style="font-weight:800;font-size:13px;color:#7C3AED;margin-bottom:10px">المسار 2 — قراءة التحاليل</div>
+              <div class="code-block" style="margin:0">
+                <div class="code-header"><span class="code-lang">Flow</span></div>
+                <div class="code-body"><pre><span class="cm">المريض:</span> يرفع صورة نتيجة تحليل
+       ↓ GPT-4 Vision
+<span class="kw">الرد:</span>   قراءة أولية للقيم
+        + توصية بالقسم
+        ⚠️ تحليل استرشادي أولي</pre></div>
+              </div>
+            </div>
+          </div>
+          <div class="warn-box mt-4">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            <span>المرحلة الثانية (مستقبلاً): تحليل الأشعة X-Ray / MRI بنماذج Computer Vision متخصصة — مؤجّل للمرحلة الثانية.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Revenue -->
+      <div class="section" id="s1-revenue">
+        <div class="section-title"><div class="section-num green">7</div>نموذج الإيرادات</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>المصدر</th><th>الآلية</th><th>النسبة المقترحة</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>حجوزات المواعيد</strong></td>
+                <td>عمولة على كل حجز مكتمل</td>
+                <td><span class="badge badge-green">5% – 15%</span></td>
+              </tr>
+              <tr>
+                <td><strong>الصيدلية الإلكترونية</strong></td>
+                <td>عمولة على كل عملية بيع</td>
+                <td><span class="badge badge-green">5% – 10%</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="info-box mt-4">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span><strong>توصية:</strong> فترة تجريبية مجانية عند الإطلاق لضمان اعتماد المستشفى — ثم تفعيل العمولة الكاملة.</span>
+        </div>
+      </div>
+
+      <!-- 8. Market -->
+      <div class="section" id="s1-market">
+        <div class="section-title"><div class="section-num amber">8</div>تحليل السوق — سوريا</div>
+        <div class="cards cards-2" style="margin-bottom:20px">
+          <div class="card">
+            <div style="font-weight:800;font-size:14px;margin-bottom:12px;color:var(--blue)">📊 واقع السوق</div>
+            <ul class="task-list">
+              <li class="task-item"><div style="width:7px;height:7px;background:var(--blue);border-radius:50%;flex-shrink:0;margin-top:6px"></div>السوق في مرحلة نمو مبكر للتحول الرقمي</li>
+              <li class="task-item"><div style="width:7px;height:7px;background:var(--blue);border-radius:50%;flex-shrink:0;margin-top:6px"></div>غالبية المستشفيات تعتمد أنظمة تقليدية أو ورقية</li>
+              <li class="task-item"><div style="width:7px;height:7px;background:var(--blue);border-radius:50%;flex-shrink:0;margin-top:6px"></div>طلب متزايد على الخدمات الصحية الرقمية</li>
+              <li class="task-item"><div style="width:7px;height:7px;background:var(--blue);border-radius:50%;flex-shrink:0;margin-top:6px"></div>انتشار الإنترنت والهواتف في المدن الكبرى</li>
+            </ul>
+          </div>
+          <div class="card" style="border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.03)">
+            <div style="font-weight:800;font-size:14px;margin-bottom:12px;color:#059669">🚀 الفرصة السوقية</div>
+            <ul class="task-list">
+              <li class="task-item"><div style="width:7px;height:7px;background:#10B981;border-radius:50%;flex-shrink:0;margin-top:6px"></div>غياب تام لحلول ذكاء اصطناعي في السوق المحلي</li>
+              <li class="task-item"><div style="width:7px;height:7px;background:#10B981;border-radius:50%;flex-shrink:0;margin-top:6px"></div>لا منافس يجمع: توجيه ذكي + حجز + صيدلية</li>
+              <li class="task-item"><div style="width:7px;height:7px;background:#10B981;border-radius:50%;flex-shrink:0;margin-top:6px"></div>حاجة فعلية لتسهيل الوصول للخدمات الطبية</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="font-weight:800;font-size:14px;margin-bottom:12px">مقارنة مع المنافس الرئيسي (ATSG)</div>
+        <div class="tbl-wrap compare-table">
+          <table>
+            <thead><tr><th>الجانب</th><th>ATSG</th><th>HealPath ✓</th></tr></thead>
+            <tbody>
+              <tr><td><strong>طبيعة المنتج</strong></td><td class="loser">نظام HIS إداري تقليدي</td><td class="winner">تطبيق ويب متكامل بذكاء اصطناعي</td></tr>
+              <tr><td><strong>توجيه المريض</strong></td><td class="loser">غير موجود</td><td class="winner">ميزة محورية بـ GPT-4</td></tr>
+              <tr><td><strong>تجربة المريض</strong></td><td class="loser">للإداريين فقط</td><td class="winner">واجهة مريض مباشرة وسهلة</td></tr>
+              <tr><td><strong>الصيدلية</strong></td><td class="loser">إداري فقط</td><td class="winner">متجر متكامل</td></tr>
+              <tr><td><strong>الذكاء الاصطناعي</strong></td><td class="loser">غائب</td><td class="winner">قلب التطبيق</td></tr>
+              <tr><td><strong>التسعير</strong></td><td class="loser">ترخيص مرتفع مسبق</td><td class="winner">عمولة مرنة على الأداء</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 9. SWOT -->
+      <div class="section" id="s1-swot">
+        <div class="section-title"><div class="section-num purple">9</div>تحليل SWOT</div>
+        <div class="swot">
+          <div class="swot-cell">
+            <div class="swot-label" style="color:#059669">💪 نقاط القوة — Strengths</div>
+            <ul class="swot-items" style="--c:#059669">
+              <li style="color:var(--text2)"><span style="color:#10B981">•</span> ذكاء اصطناعي متكامل (GPT-4)</li>
+              <li style="color:var(--text2)"><span style="color:#10B981">•</span> 4 أدوار بصلاحيات محددة</li>
+              <li style="color:var(--text2)"><span style="color:#10B981">•</span> نموذج إيراد مرن بالعمولة</li>
+              <li style="color:var(--text2)"><span style="color:#10B981">•</span> Docker مكتفٍ ذاتياً تماماً</li>
+            </ul>
+          </div>
+          <div class="swot-cell">
+            <div class="swot-label" style="color:#DC2626">⚠️ نقاط الضعف — Weaknesses</div>
+            <ul class="swot-items">
+              <li style="color:var(--text2)"><span style="color:#EF4444">•</span> فريق فردي — وقت تطوير أطول</li>
+              <li style="color:var(--text2)"><span style="color:#EF4444">•</span> اعتماد على API خارجي (OpenAI)</li>
+            </ul>
+          </div>
+          <div class="swot-cell">
+            <div class="swot-label" style="color:var(--blue)">🚀 الفرص — Opportunities</div>
+            <ul class="swot-items">
+              <li style="color:var(--text2)"><span style="color:var(--blue)">•</span> سوق غير مشبع بالحلول الذكية</li>
+              <li style="color:var(--text2)"><span style="color:var(--blue)">•</span> لا منافسة بذكاء اصطناعي</li>
+              <li style="color:var(--text2)"><span style="color:var(--blue)">•</span> طلب حقيقي ومتزايد</li>
+            </ul>
+          </div>
+          <div class="swot-cell">
+            <div class="swot-label" style="color:#D97706">🔥 التهديدات — Threats</div>
+            <ul class="swot-items">
+              <li style="color:var(--text2)"><span style="color:#F59E0B">•</span> تحديات الدفع الإلكتروني (مؤجّلة)</li>
+              <li style="color:var(--text2)"><span style="color:#F59E0B">•</span> متطلبات تنظيمية طبية</li>
+              <li style="color:var(--text2)"><span style="color:#F59E0B">•</span> مقاومة التحول الرقمي</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. Risks -->
+      <div class="section" id="s1-risks">
+        <div class="section-title"><div class="section-num red">10</div>المخاطر والتحديات</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>التحدي</th><th>التأثير</th><th>التوصية</th></tr></thead>
+            <tbody>
+              <tr><td><strong>المتطلبات التنظيمية الطبية</strong></td><td><span class="badge badge-red">عالٍ</span></td><td>التواصل المبكر مع الجهات الصحية</td></tr>
+              <tr><td><strong>دقة نماذج الذكاء الاصطناعي</strong></td><td><span class="badge badge-red">عالٍ</span></td><td>GPT-4 مثبت + إخلاء مسؤولية واضح</td></tr>
+              <tr><td><strong>مقاومة التحول الرقمي</strong></td><td><span class="badge badge-amber">متوسط</span></td><td>فترة تجريبية مجانية + تدريب</td></tr>
+              <tr><td><strong>فريق فردي</strong></td><td><span class="badge badge-amber">متوسط</span></td><td>تدرج في التنفيذ وفق الخطة</td></tr>
+              <tr><td><strong>الدفع الإلكتروني</strong></td><td><span class="badge badge-green">مؤجّل</span></td><td>نبدأ نقدياً في المرحلة الأولى</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 11. UI/UX -->
+      <div class="section" id="s1-ui">
+        <div class="section-title"><div class="section-num">11</div>معمارية الواجهة — UI/UX Architecture</div>
+        <div class="tbl-wrap" style="margin-bottom:20px">
+          <table>
+            <thead><tr><th>القرار</th><th>الخيار المعتمد</th></tr></thead>
+            <tbody>
+              <tr><td><strong>نوع التطبيق</strong></td><td><code>SPA</code> — Single Page Application — تجربة تطبيق أصيلة</td></tr>
+              <tr><td><strong>المساعد الذكي</strong></td><td>زر طاف ثابت (FAB) + Drawer جانبي منبثق</td></tr>
+              <tr><td><strong>عرض الأطباء</strong></td><td>بطاقات (Cards) بصورة واسم وتخصص وتقييم</td></tr>
+              <tr><td><strong>واجهة المريض</strong></td><td>تنقل علوي (Top Navigation)</td></tr>
+              <tr><td><strong>واجهة المستشفى</strong></td><td>شريط جانبي (Sidebar) ثابت</td></tr>
+              <tr><td><strong>الاتجاه الافتراضي</strong></td><td><code>RTL</code> (عربي) مع دعم <code>LTR</code> للإنجليزية</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="font-weight:800;font-size:14px;margin-bottom:10px">مسار الحجز — Booking Flow</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:20px">
+          {["اختيار القسم","اختيار الطبيب","بروفايل الطبيب","اختيار التاريخ","اختيار الوقت","ملاحظات","تأكيد الحجز"].map((s,i,a)=>`
+            <span style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;white-space:nowrap">${s}</span>
+            ${i<a.length-1?`<span style="color:var(--text3);font-size:14px">→</span>`:""}
+          `).join("")}
+        </div>
+      </div>
+
+      <!-- 12. Decisions -->
+      <div class="section" id="s1-decisions">
+        <div class="section-title"><div class="section-num green">12</div>القرارات المحسومة</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>القرار</th><th>الاختيار النهائي</th></tr></thead>
+            <tbody>
+              <tr><td><strong>نوع المنتج</strong></td><td><span class="badge badge-blue">Web Application</span></td></tr>
+              <tr><td><strong>أدوار لوحة التحكم</strong></td><td>4 أدوار: مدير عام، طبيب، مدير صيدلية، مسؤول توظيف</td></tr>
+              <tr><td><strong>الدفع — المرحلة الأولى</strong></td><td><span class="badge badge-amber">نقدي عند الوصول</span></td></tr>
+              <tr><td><strong>الدفع — المرحلة الثانية</strong></td><td>إلكتروني (سيريتل كاش / بيمو)</td></tr>
+              <tr><td><strong>تخزين البيانات</strong></td><td><code>PostgreSQL</code> داخل Docker Volume</td></tr>
+              <tr><td><strong>تخزين الملفات</strong></td><td>محلي داخل Docker Volume (صور، PDFs)</td></tr>
+              <tr><td><strong>النشر</strong></td><td>حاوية Docker مكتفية ذاتياً</td></tr>
+              <tr><td><strong>تحليل الأشعة</strong></td><td><span class="badge badge-purple">مؤجّل للمرحلة الثانية</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section><!-- /study -->
+
+    <!-- ════════════════════════════ PLAN DOC -->
+    <section class="doc-section" id="sec-plan">
+
+      <div class="doc-hero">
+        <div class="hero-badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+          <span>خطة التنفيذ — Execution Plan</span>
+        </div>
+        <h1 class="hero-title">خطة العمل الاحترافية<br>HealPath — 7 مراحل + Docker</h1>
+        <p class="hero-sub">خطة تنفيذ مفصّلة تشمل المكدس التقني، مخطط قاعدة البيانات، هيكل المجلدات، ومراحل التطوير السبع من الإعداد حتى النشر. ~14 أسبوعاً.</p>
+        <div class="hero-meta">
+          <div class="meta-chip"><span>إجمالي المراحل</span><strong>8 مراحل</strong></div>
+          <div class="meta-chip"><span>المدة الكلية</span><strong>~14 أسبوعاً</strong></div>
+          <div class="meta-chip"><span>البنية</span><strong>Docker Compose</strong></div>
+          <div class="meta-chip"><span>الذكاء الاصطناعي</strong></div>
+          <div class="meta-chip"><span>قاعدة البيانات</span><strong>PostgreSQL 16</strong></div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-val">8</div><div class="stat-label">مراحل التنفيذ</div></div>
+        <div class="stat-card"><div class="stat-val">~14</div><div class="stat-label">أسبوعاً إجمالياً</div></div>
+        <div class="stat-card"><div class="stat-val">11</div><div class="stat-label">جدول في قاعدة البيانات</div></div>
+        <div class="stat-card"><div class="stat-val">4</div><div class="stat-label">خدمات Docker</div></div>
+      </div>
+
+      <!-- 1. Tech Stack -->
+      <div class="section" id="p1-stack">
+        <div class="section-title"><div class="section-num">1</div>المكدس التقني المعتمد</div>
+
+        <div style="margin-bottom:16px">
+          <div style="font-weight:700;font-size:13px;margin-bottom:10px;color:var(--text2)">هيكل حاوية Docker</div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">docker-compose.yml</span></div>
+            <div class="code-body"><pre><span class="kw">docker-compose.yml</span>
+├── <span class="str">🌐 nginx</span>       — Reverse Proxy + SSL
+├── <span class="str">⚛️  nextjs</span>      — Frontend (React/Next.js 14)
+├── <span class="str">🟢 api</span>         — Backend (Node.js + Express)
+├── <span class="str">🐘 postgres</span>    — قاعدة البيانات
+└── <span class="str">📁 volumes</span>
+    ├── postgres_data  — <span class="cm">بيانات DB (دائمة)</span>
+    └── uploads        — <span class="cm">الملفات المرفوعة (صور، PDFs)</span></pre></div>
+          </div>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>المكوّن</th><th>التقنية</th><th>السبب</th></tr></thead>
+            <tbody>
+              <tr><td><strong>الواجهة الأمامية</strong></td><td><code>Next.js 14</code> App Router</td><td>SSR + SPA + أداء عالٍ + RTL</td></tr>
+              <tr><td><strong>إدارة الحالة</strong></td><td><code>Zustand</code> + <code>React Query</code></td><td>سرعة وبساطة</td></tr>
+              <tr><td><strong>تصميم الواجهة</strong></td><td><code>Tailwind CSS</code> + <code>shadcn/ui</code></td><td>حديث + قابل للتخصيص</td></tr>
+              <tr><td><strong>الواجهة الخلفية</strong></td><td><code>Node.js</code> + <code>Express.js</code></td><td>سرعة التطوير</td></tr>
+              <tr><td><strong>قاعدة البيانات</strong></td><td><code>PostgreSQL 16</code></td><td>موثوقية + بيانات طبية</td></tr>
+              <tr><td><strong>ORM</strong></td><td><code>Prisma</code></td><td>سهولة التعامل مع DB</td></tr>
+              <tr><td><strong>المصادقة</strong></td><td><code>JWT</code> + <code>bcrypt</code></td><td>معيار الصناعة</td></tr>
+              <tr><td><strong>المساعد الذكي</strong></td><td><code>OpenAI GPT-4 + Vision</code></td><td>تحليل الأعراض والتحاليل</td></tr>
+              <tr><td><strong>تخزين الملفات</strong></td><td>Local Docker Volume</td><td>مكتفٍ ذاتياً — لا S3</td></tr>
+              <tr><td><strong>الإشعارات</strong></td><td><code>Nodemailer</code></td><td>إشعارات البريد الإلكتروني</td></tr>
+              <tr><td><strong>Reverse Proxy</strong></td><td><code>Nginx</code></td><td>توجيه الطلبات + SSL</td></tr>
+              <tr><td><strong>النشر النهائي</strong></td><td><code>Docker Compose</code></td><td>حاوية واحدة قابلة للنقل</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. Database Schema -->
+      <div class="section" id="p2-schema">
+        <div class="section-title"><div class="section-num green">2</div>مخطط قاعدة البيانات</div>
+        <div class="schema-grid">
+          <div class="schema-card">
+            <div class="schema-name"><span>USERS</span> — المرضى</div>
+            <ul class="schema-fields">
+              <li class="schema-field"><span class="field-name">id</span><span class="field-pk">UUID PK</span></li>
+              <li class="schema-field"><span class="field-name">name, email</span><span class="field-type">VARCHAR</span></li>
+              <li class="schema-field"><span class="field-name">password_hash</span><span class="field-type">bcrypt</span></li>
+              <li class="schema-field"><span class="field-name">phone</span><span class="field-type">VARCHAR</span></li>
+              <li class="schema-field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></li>
+            </ul>
+          </div>
+          <div class="schema-card">
+            <div class="schema-name"><span>HOSPITAL_STAFF</span> — موظفو المستشفى</div>
+            <ul class="schema-fields">
+              <li class="schema-field"><span class="field-name">id</span><span class="field-pk">UUID PK</span></li>
+              <li class="schema-field"><span class="field-name">name, email</span><span class="field-type">VARCHAR</span></li>
+              <li class="schema-field"><span class="field-name">role</span><span class="field-type">ENUM(admin,doctor,pharmacy,hr)</span></li>
+              <li class="schema-field"><span class="field-name">department_id</span><span class="field-fk">FK → DEPARTMENTS</span></li>
+              <li class="schema-field"><span class="field-name">specialization, bio</span><span class="field-type">TEXT</span></li>
+              <li class="schema-field"><span class="field-name">photo_path</span><span class="field-type">VARCHAR</span></li>
+            </ul>
+          </div>
+          <div class="schema-card">
+            <div class="schema-name"><span>APPOINTMENTS</span> — الحجوزات</div>
+            <ul class="schema-fields">
+              <li class="schema-field"><span class="field-name">id</span><span class="field-pk">UUID PK</span></li>
+              <li class="schema-field"><span class="field-name">patient_id</span><span class="field-fk">FK → USERS</span></li>
+              <li class="schema-field"><span class="field-name">doctor_id</span><span class="field-fk">FK → HOSPITAL_STAFF</span></li>
+              <li class="schema-field"><span class="field-name">appointment_date</span><span class="field-type">DATE</span></li>
+              <li class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM(pending,confirmed,completed,cancelled)</span></li>
+              <li class="schema-field"><span class="field-name">notes</span><span class="field-type">TEXT</span></li>
+            </ul>
+          </div>
+          <div class="schema-card">
+            <div class="schema-name"><span>MEDICINES</span> — الأدوية</div>
+            <ul class="schema-fields">
+              <li class="schema-field"><span class="field-name">id</span><span class="field-pk">UUID PK</span></li>
+              <li class="schema-field"><span class="field-name">name, scientific_name</span><span class="field-type">VARCHAR</span></li>
+              <li class="schema-field"><span class="field-name">price</span><span class="field-type">DECIMAL</span></li>
+              <li class="schema-field"><span class="field-name">stock_quantity</span><span class="field-type">INTEGER</span></li>
+              <li class="schema-field"><span class="field-name">image_path</span><span class="field-type">VARCHAR</span></li>
+              <li class="schema-field"><span class="field-name">is_available</span><span class="field-type">BOOLEAN</span></li>
+            </ul>
+          </div>
+          <div class="schema-card">
+            <div class="schema-name"><span>ORDERS</span> — طلبات الصيدلية</div>
+            <ul class="schema-fields">
+              <li class="schema-field"><span class="field-name">id</span><span class="field-pk">UUID PK</span></li>
+              <li class="schema-field"><span class="field-name">patient_id</span><span class="field-fk">FK → USERS</span></li>
+              <li class="schema-field"><span class="field-name">status</span><span class="field-type">ENUM(pending,confirmed,delivered,cancelled)</span></li>
+              <li class="schema-field"><span class="field-name">delivery_type</span><span class="field-type">ENUM(pickup,delivery)</span></li>
+              <li class="schema-field"><span class="field-name">total_price</span><span class="field-type">DECIMAL</span></li>
+            </ul>
+          </div>
+          <div class="schema-card">
+            <div class="schema-name"><span>AI_CONVERSATIONS</span> — المساعد الذكي</div>
+            <ul class="schema-fields">
+              <li class="schema-field"><span class="field-name">id</span><span class="field-pk">UUID PK</span></li>
+              <li class="schema-field"><span class="field-name">patient_id</span><span class="field-fk">FK → USERS</span></li>
+              <li class="schema-field"><span class="field-name">type</span><span class="field-type">ENUM(symptoms,lab_result)</span></li>
+              <li class="schema-field"><span class="field-name">input_text</span><span class="field-type">TEXT</span></li>
+              <li class="schema-field"><span class="field-name">ai_response</span><span class="field-type">JSONB</span></li>
+              <li class="schema-field"><span class="field-name">recommended_department</span><span class="field-type">VARCHAR</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="info-box mt-4">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+          <span>+ 5 جداول إضافية: <code>DEPARTMENTS</code>, <code>DOCTOR_SCHEDULES</code>, <code>ORDER_ITEMS</code>, <code>JOB_LISTINGS</code>, <code>JOB_APPLICATIONS</code>, <code>ARTICLES</code></span>
+        </div>
+      </div>
+
+      <!-- 3. Folder Structure -->
+      <div class="section" id="p3-folders">
+        <div class="section-title"><div class="section-num purple">3</div>هيكل المجلدات</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">Project Structure</span></div>
+          <div class="code-body"><pre><span class="str">healpath/</span>
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── .env.example
+├── <span class="kw">nginx/</span>
+│   └── nginx.conf
+├── <span class="kw">frontend/</span>                    <span class="cm"># Next.js App</span>
+│   ├── Dockerfile
+│   └── src/
+│       ├── <span class="str">app/</span>                <span class="cm"># App Router Pages</span>
+│       │   ├── (public)/       <span class="cm"># صفحات الزوار</span>
+│       │   ├── (patient)/      <span class="cm"># بوابة المريض</span>
+│       │   └── (dashboard)/    <span class="cm"># لوحة التحكم</span>
+│       ├── <span class="str">components/</span>
+│       │   ├── ui/             <span class="cm"># shadcn/ui</span>
+│       │   ├── patient/        <span class="cm"># مكونات المريض</span>
+│       │   ├── dashboard/      <span class="cm"># مكونات لوحة التحكم</span>
+│       │   └── ai-assistant/   <span class="cm"># المساعد الذكي</span>
+│       ├── lib/
+│       └── hooks/
+├── <span class="kw">backend/</span>                     <span class="cm"># Node.js + Express</span>
+│   ├── Dockerfile
+│   └── src/
+│       ├── <span class="str">routes/</span>
+│       │   ├── auth.routes.js
+│       │   ├── appointments.routes.js
+│       │   ├── pharmacy.routes.js
+│       │   ├── ai.routes.js
+│       │   └── jobs.routes.js
+│       ├── <span class="str">middleware/</span>
+│       │   ├── auth.middleware.js
+│       │   └── rbac.middleware.js
+│       ├── controllers/
+│       ├── <span class="str">services/</span>
+│       │   └── openai.service.js
+│       └── prisma/
+│           └── schema.prisma
+└── <span class="kw">uploads/</span>                     <span class="cm"># Docker Volume</span>
+    ├── doctors/ | medicines/ | lab-results/ | cvs/</pre></div>
+        </div>
+      </div>
+
+      <!-- 4. Phases -->
+      <div class="section" id="p4-phases">
+        <div class="section-title"><div class="section-num amber">4</div>خطة التنفيذ — 8 مراحل</div>
+
+        <div class="timeline">
+          <!-- Phase 0 -->
+          <div class="phase">
+            <div class="phase-dot"></div>
+            <div class="phase-card">
+              <div class="phase-header">
+                <div><div class="phase-num">المرحلة 0</div></div>
+                <div class="phase-title">الإعداد والبنية التحتية</div>
+                <div class="phase-dur">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>أسبوع 1</span>
+                </div>
+              </div>
+              <div class="phase-body">
+                <div style="font-size:12px;color:var(--text3);margin-bottom:10px;font-weight:600">معيار الاكتمال: جميع الحاويات تعمل وتتواصل مع بعضها</div>
+                <ul class="task-list">
+                  <li class="task-item"><div class="task-check"></div>تثبيت Docker + Docker Compose على بيئة التطوير</li>
+                  <li class="task-item"><div class="task-check"></div>إنشاء docker-compose.yml (postgres + api + nextjs + nginx)</li>
+                  <li class="task-item"><div class="task-check"></div>إعداد Prisma Schema الكامل + Migrations</li>
+                  <li class="task-item"><div class="task-check"></div>إعداد متغيرات البيئة (.env)</li>
+                  <li class="task-item"><div class="task-check"></div>إعداد Git repository وهيكل الفروع</li>
+                </ul>
+                <div class="code-block" style="margin-top:14px">
+                  <div class="code-header"><span class="code-lang">docker-compose.yml (مقتطف)</span></div>
+                  <div class="code-body"><pre><span class="kw">services</span>:
+  <span class="str">postgres</span>:
+    image: <span class="num">postgres:16-alpine</span>
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  <span class="str">api</span>:
+    build: ./backend
+    volumes:
+      - uploads:/app/uploads
+    depends_on: [postgres]
+  <span class="str">frontend</span>:
+    build: ./frontend
+    depends_on: [api]
+  <span class="str">nginx</span>:
+    image: <span class="num">nginx:alpine</span>
+    ports: [<span class="str">"80:80"</span>, <span class="str">"443:443"</span>]</pre></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 1 -->
+          <div class="phase">
+            <div class="phase-dot"></div>
+            <div class="phase-card">
+              <div class="phase-header">
+                <div><div class="phase-num">المرحلة 1</div></div>
+                <div class="phase-title">المصادقة والأدوار</div>
+                <div class="phase-dur"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>أسبوعان (2-3)</span></div>
+              </div>
+              <div class="phase-body">
+                <div style="font-size:12px;color:var(--text3);margin-bottom:10px;font-weight:600">الهدف: نظام تسجيل الدخول لجميع المستخدمين</div>
+                <div class="section-tag tag-be">Backend</div>
+                <ul class="task-list" style="margin-bottom:10px">
+                  <li class="task-item"><div class="task-check"></div><code>POST /api/auth/register</code> — تسجيل مريض جديد</li>
+                  <li class="task-item"><div class="task-check"></div><code>POST /api/auth/login</code> — دخول المريض</li>
+                  <li class="task-item"><div class="task-check"></div><code>POST /api/staff/login</code> — دخول الموظفين (4 أدوار)</li>
+                  <li class="task-item"><div class="task-check"></div>JWT middleware مع RBAC (Role-Based Access Control)</li>
+                </ul>
+                <div class="section-tag tag-fe">Frontend</div>
+                <ul class="task-list">
+                  <li class="task-item"><div class="task-check"></div>صفحة Landing Page (هيكل كامل + هوية بصرية)</li>
+                  <li class="task-item"><div class="task-check"></div>شاشات تسجيل الدخول + إنشاء حساب</li>
+                  <li class="task-item"><div class="task-check"></div>Protected Routes حسب الدور</li>
+                  <li class="task-item"><div class="task-check"></div>توجيه تلقائي بعد الدخول حسب الدور</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 2 -->
+          <div class="phase">
+            <div class="phase-dot"></div>
+            <div class="phase-card">
+              <div class="phase-header">
+                <div><div class="phase-num">المرحلة 2</div></div>
+                <div class="phase-title">الأقسام والأطباء والحجوزات ⭐</div>
+                <div class="phase-dur"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>3 أسابيع (4-6)</span></div>
+              </div>
+              <div class="phase-body">
+                <div style="font-size:12px;color:var(--text3);margin-bottom:10px;font-weight:600">الهدف: الوظيفة الجوهرية للتطبيق</div>
+                <div class="section-tag tag-be">Backend</div>
+                <ul class="task-list" style="margin-bottom:10px">
+                  <li class="task-item"><div class="task-check"></div><code>GET /api/departments/:id/doctors</code></li>
+                  <li class="task-item"><div class="task-check"></div><code>GET /api/doctors/:id/availability</code></li>
+                  <li class="task-item"><div class="task-check"></div><code>POST /api/appointments</code> + تحقق من التعارض</li>
+                  <li class="task-item"><div class="task-check"></div>إشعار بريد عند الحجز (Nodemailer)</li>
+                </ul>
+                <div class="section-tag tag-fe">Frontend — بوابة المريض</div>
+                <ul class="task-list">
+                  <li class="task-item"><div class="task-check"></div>صفحة الأقسام + صفحة أطباء القسم</li>
+                  <li class="task-item"><div class="task-check"></div>Stepper الحجز (7 خطوات)</li>
+                  <li class="task-item"><div class="task-check"></div>التقويم التفاعلي (أيام متاحة / محجوزة)</li>
+                  <li class="task-item"><div class="task-check"></div>صفحة "مواعيدي" للمريض</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 3 -->
+          <div class="phase">
+            <div class="phase-dot"></div>
+            <div class="phase-card">
+              <div class="phase-header">
+                <div><div class="phase-num">المرحلة 3</div></div>
+                <div class="phase-title">الصيدلية الإلكترونية</div>
+                <div class="phase-dur"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>أسبوعان (7-8)</span></div>
+              </div>
+              <div class="phase-body">
+                <div style="font-size:12px;color:var(--text3);margin-bottom:10px;font-weight:600">الهدف: متجر الأدوية الكامل</div>
+                <div class="cards cards-2" style="margin-top:8px">
+                  <div>
+                    <div class="section-tag tag-be">Backend</div>
+                    <ul class="task-list">
+                      <li class="task-item"><div class="task-check"></div>CRUD الأدوية + رفع الصورة</li>
+                      <li class="task-item"><div class="task-check"></div><code>POST /api/orders</code> + تحديث المخزون</li>
+                      <li class="task-item"><div class="task-check"></div>تحديث حالة الطلب</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div class="section-tag tag-fe">Frontend</div>
+                    <ul class="task-list">
+                      <li class="task-item"><div class="task-check"></div>صفحة الصيدلية (عرض + بحث + فلترة)</li>
+                      <li class="task-item"><div class="task-check"></div>سلة المشتريات (Cart)</li>
+                      <li class="task-item"><div class="task-check"></div>إدارة الطلبات لمدير الصيدلية</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 4 -->
+          <div class="phase">
+            <div class="phase-dot"></div>
+            <div class="phase-card">
+              <div class="phase-header">
+                <div><div class="phase-num">المرحلة 4</div></div>
+                <div class="phase-title">المساعد الطبي الذكي 🤖</div>
+                <div class="phase-dur"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>أسبوعان (9-10)</span></div>
+              </div>
+              <div class="phase-body">
+                <div style="font-size:12px;color:var(--text3);margin-bottom:10px;font-weight:600">الهدف: الميزة الفريدة في التطبيق</div>
+                <div class="code-block" style="margin-bottom:14px">
+                  <div class="code-header"><span class="code-lang">openai.service.js — System Prompt</span></div>
+                  <div class="code-body"><pre><span class="kw">const</span> systemPrompt = <span class="str">`
+أنت مساعد طبي ذكي لمستشفى HealPath.
+مهمتك: تحليل أعراض المريض وتوجيهه للقسم المناسب.
+الأقسام: العظمية، الصدرية، الكلى، القلبية، العصبية.
+أجب بـ JSON: { department, reason, urgency, disclaimer }
+`</span>;</pre></div>
+                </div>
+                <div class="cards cards-2">
+                  <div>
+                    <div class="section-tag tag-be">Backend</div>
+                    <ul class="task-list">
+                      <li class="task-item"><div class="task-check"></div><code>POST /api/ai/symptoms</code></li>
+                      <li class="task-item"><div class="task-check"></div><code>POST /api/ai/lab-result</code> (GPT-4 Vision)</li>
+                      <li class="task-item"><div class="task-check"></div>Rate Limiting لضبط OpenAI</li>
+                      <li class="task-item"><div class="task-check"></div>حفظ سجل المحادثات في DB</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div class="section-tag tag-fe">Frontend</div>
+                    <ul class="task-list">
+                      <li class="task-item"><div class="task-check"></div>Floating Action Button ثابت</li>
+                      <li class="task-item"><div class="task-check"></div>Side Drawer منبثق</li>
+                      <li class="task-item"><div class="task-check"></div>رفع صورة التحليل (Drag & Drop)</li>
+                      <li class="task-item"><div class="task-check"></div>زر "احجز موعداً الآن" مباشر</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 5 -->
+          <div class="phase">
+            <div class="phase-dot"></div>
+            <div class="phase-card">
+              <div class="phase-header">
+                <div><div class="phase-num">المرحلة 5</div></div>
+                <div class="phase-title">التوظيف والمحتوى التثقيفي</div>
+                <div class="phase-dur"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>أسبوع 11</span></div>
+              </div>
+              <div class="phase-body">
+                <ul class="task-list">
+                  <li class="task-item"><div class="task-check"></div>CRUD الشواغر الوظيفية + رفع CV (PDF → Volume)</li>
+                  <li class="task-item"><div class="task-check"></div>صفحة الشواغر للجميع + نموذج التقديم</li>
+                  <li class="task-item"><div class="task-check"></div>CRUD المقالات + رفع الصور → Volume</li>
+                  <li class="task-item"><div class="task-check"></div>صفحة المقالات مرئية لجميع الزوار</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 6 -->
+          <div class="phase">
+            <div class="phase-dot"></div>
+            <div class="phase-card">
+              <div class="phase-header">
+                <div><div class="phase-num">المرحلة 6</div></div>
+                <div class="phase-title">الإحصائيات والتقارير</div>
+                <div class="phase-dur"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>أسبوع 12</span></div>
+              </div>
+              <div class="phase-body">
+                <ul class="task-list">
+                  <li class="task-item"><div class="task-check"></div><code>GET /api/stats/overview</code> — أرقام لوحة التحكم</li>
+                  <li class="task-item"><div class="task-check"></div>بطاقات الأرقام الرئيسية (حجوزات، مرضى، إيرادات)</li>
+                  <li class="task-item"><div class="task-check"></div>رسوم بيانية (Recharts) — الحجوزات والإيرادات</li>
+                  <li class="task-item"><div class="task-check"></div>جدول آخر الحجوزات والطلبات</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phase 7 -->
+          <div class="phase">
+            <div class="phase-dot" style="background:linear-gradient(135deg,#10B981,#059669);box-shadow:0 0 0 2px #10B981"></div>
+            <div class="phase-card" style="border-color:rgba(16,185,129,.25)">
+              <div class="phase-header" style="background:linear-gradient(135deg,#065F46,#047857)">
+                <div><div class="phase-num" style="background:rgba(16,185,129,.3);border-color:rgba(16,185,129,.4);color:#6EE7B7">المرحلة 7</div></div>
+                <div class="phase-title">الجودة والأمان والنشر 🚀</div>
+                <div class="phase-dur"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>أسبوع ونصف (13-14)</span></div>
+              </div>
+              <div class="phase-body">
+                <div class="cards cards-2">
+                  <div>
+                    <div class="section-tag" style="background:rgba(16,185,129,.12);color:#059669">الجودة والأمان</div>
+                    <ul class="task-list">
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div>HTTPS إجباري (Nginx + SSL)</li>
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div>Rate Limiting على جميع الـ APIs</li>
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div>Input Validation (Zod)</li>
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div>مراجعة شاملة للصلاحيات</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div class="section-tag" style="background:rgba(16,185,129,.12);color:#059669">الإنتاج والنشر</div>
+                    <ul class="task-list">
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div>Dockerfile محسّن (Multi-stage builds)</li>
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div>docker-compose.prod.yml للإنتاج</li>
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div>نسخ احتياطية تلقائية لـ Volume</li>
+                      <li class="task-item"><div class="task-check" style="border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.08)"></div><code>docker-compose up</code> — تشغيل بأمر واحد ✅</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Timeline -->
+      <div class="section" id="p5-timeline">
+        <div class="section-title"><div class="section-num">5</div>الجدول الزمني الإجمالي</div>
+        <div class="tbl-wrap">
+          <table class="gantt">
+            <thead>
+              <tr><th>المرحلة</th><th>الوصف</th><th>المدة</th><th>الأسابيع</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="badge badge-navy">0</span></td><td>الإعداد + Docker + Prisma</td><td>أسبوع</td><td>1</td></tr>
+              <tr><td><span class="badge badge-blue">1</span></td><td>المصادقة + الأدوار (JWT + RBAC)</td><td>أسبوعان</td><td>2 – 3</td></tr>
+              <tr><td><span class="badge badge-blue">2</span></td><td>الأقسام + الأطباء + الحجوزات</td><td>3 أسابيع</td><td>4 – 6</td></tr>
+              <tr><td><span class="badge badge-green">3</span></td><td>الصيدلية الإلكترونية</td><td>أسبوعان</td><td>7 – 8</td></tr>
+              <tr><td><span class="badge badge-purple">4</span></td><td>المساعد الطبي الذكي (GPT-4)</td><td>أسبوعان</td><td>9 – 10</td></tr>
+              <tr><td><span class="badge badge-amber">5</span></td><td>التوظيف + المقالات التثقيفية</td><td>أسبوع</td><td>11</td></tr>
+              <tr><td><span class="badge badge-amber">6</span></td><td>الإحصائيات + التقارير</td><td>أسبوع</td><td>12</td></tr>
+              <tr><td><span class="badge badge-green">7</span></td><td>الجودة + الأمان + Docker النشر</td><td>أسبوع ونصف</td><td>13 – 14</td></tr>
+              <tr style="background:rgba(0,102,255,.05)"><td colspan="2"><strong style="color:var(--blue)">المجموع الكلي</strong></td><td><strong style="color:var(--blue)">~14 أسبوعاً</strong></td><td><strong style="color:var(--blue)">~3.5 أشهر</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 6. Env Variables -->
+      <div class="section" id="p6-env">
+        <div class="section-title"><div class="section-num green">6</div>متغيرات البيئة</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">.env.example</span></div>
+          <div class="code-body"><pre><span class="cm"># قاعدة البيانات</span>
+<span class="key">DATABASE_URL</span>=<span class="str">postgresql://healpath_user:PASSWORD@postgres:5432/healpath_db</span>
+<span class="key">DB_PASSWORD</span>=<span class="str">your_secure_password</span>
+
+<span class="cm"># المصادقة</span>
+<span class="key">JWT_SECRET</span>=<span class="str">your_jwt_secret_key</span>
+<span class="key">JWT_EXPIRES_IN</span>=<span class="str">7d</span>
+
+<span class="cm"># OpenAI</span>
+<span class="key">OPENAI_API_KEY</span>=<span class="str">sk-...</span>
+
+<span class="cm"># البريد الإلكتروني</span>
+<span class="key">SMTP_HOST</span>=<span class="str">smtp.gmail.com</span>
+<span class="key">SMTP_PORT</span>=<span class="num">587</span>
+<span class="key">SMTP_USER</span>=<span class="str">hospital@email.com</span>
+<span class="key">SMTP_PASS</span>=<span class="str">email_password</span>
+
+<span class="cm"># تخزين الملفات (محلي في Docker)</span>
+<span class="key">UPLOADS_PATH</span>=<span class="str">/app/uploads</span>
+<span class="key">MAX_FILE_SIZE</span>=<span class="str">10mb</span>
+
+<span class="cm"># البيئة</span>
+<span class="key">NODE_ENV</span>=<span class="str">production</span>
+<span class="key">PORT</span>=<span class="num">3001</span></pre></div>
+        </div>
+      </div>
+
+      <!-- 7. Commands -->
+      <div class="section" id="p7-commands">
+        <div class="section-title"><div class="section-num purple">7</div>أوامر التشغيل</div>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span></div>
+          <div class="code-body"><pre><span class="cm"># بيئة التطوير</span>
+<span class="kw">docker-compose up -d</span>
+
+<span class="cm"># إنشاء قاعدة البيانات والجداول</span>
+<span class="kw">docker-compose exec</span> api npx prisma migrate dev
+
+<span class="cm"># بيئة الإنتاج</span>
+<span class="kw">docker-compose</span> -f docker-compose.prod.yml <span class="kw">up -d</span>
+
+<span class="cm"># نسخة احتياطية لقاعدة البيانات</span>
+<span class="kw">docker-compose exec</span> postgres pg_dump -U healpath_user healpath_db > backup.sql
+
+<span class="cm"># تحديث التطبيق</span>
+<span class="kw">docker-compose pull</span> &amp;&amp; <span class="kw">docker-compose up -d --build</span></pre></div>
+        </div>
+      </div>
+
+      <!-- 8. Docker Benefits -->
+      <div class="section" id="p8-docker">
+        <div class="section-title"><div class="section-num amber">8</div>مزايا قرار Docker</div>
+        <div class="cards cards-3">
+          <div class="card">
+            <div class="card-icon" style="background:rgba(0,102,255,.1);font-size:22px">🔒</div>
+            <div class="card-title">الاستقلالية الكاملة</div>
+            <div class="card-desc">لا اعتماد على AWS أو أي خدمة خارجية — كل شيء داخل الحاوية</div>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:rgba(16,185,129,.1);font-size:22px">🚀</div>
+            <div class="card-title">قابلية النقل</div>
+            <div class="card-desc">يُنشر على أي سيرفر في ثوانٍ بأمر واحد: <code>docker-compose up</code></div>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:rgba(139,92,246,.1);font-size:22px">🛡️</div>
+            <div class="card-title">البيانات آمنة</div>
+            <div class="card-desc">كل البيانات في Volumes محلية — مناسب للبيانات الطبية الحساسة</div>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:rgba(245,158,11,.1);font-size:22px">⚡</div>
+            <div class="card-title">التحديث السهل</div>
+            <div class="card-desc">أمر واحد يحدّث التطبيق كاملاً مع صفر downtime</div>
+          </div>
+          <div class="card">
+            <div class="card-icon" style="background:rgba(239,68,68,.1);font-size:22px">🌍</div>
+            <div class="card-title">بيئة موحّدة</div>
+            <div class="card-desc">نفس البيئة في التطوير والإنتاج — صفر مشاكل التوافق</div>
+          </div>
+          <div class="card" style="border-color:rgba(16,185,129,.25);background:rgba(16,185,129,.03)">
+            <div class="card-icon" style="background:rgba(16,185,129,.1);font-size:22px">🇸🇾</div>
+            <div class="card-title">مناسب للسوق السوري</div>
+            <div class="card-desc">يعمل على سيرفر محلي دون قيود أو اعتماد على خدمات خارجية</div>
+          </div>
+        </div>
+      </div>
+
+    </section><!-- /plan -->
+
+  </main>
+</div><!-- /layout -->
+
+<script>
+// ── Dark Mode
+let isDark = false;
+function toggleDark(){
+  isDark = !isDark;
+  document.body.setAttribute('data-dark', isDark);
+  document.getElementById('darkBtn').innerHTML = isDark
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+}
+
+// ── Tab Switch
+const TOC_STUDY = [
+  ['s1-overview','نظرة عامة'],['s1-concept','Web App vs Website'],
+  ['s1-brand','الهوية البصرية'],['s1-users','المستخدمون'],
+  ['s1-depts','الأقسام الطبية'],['s1-features','الميزات'],
+  ['s1-revenue','نموذج الإيرادات'],['s1-market','تحليل السوق'],
+  ['s1-swot','تحليل SWOT'],['s1-risks','المخاطر'],
+  ['s1-ui','معمارية الواجهة'],['s1-decisions','القرارات المحسومة']
+];
+const TOC_PLAN = [
+  ['p1-stack','المكدس التقني'],['p2-schema','قاعدة البيانات'],
+  ['p3-folders','هيكل المجلدات'],['p4-phases','مراحل التنفيذ'],
+  ['p5-timeline','الجدول الزمني'],['p6-env','متغيرات البيئة'],
+  ['p7-commands','أوامر التشغيل'],['p8-docker','مزايا Docker']
+];
+
+function buildTOC(items){
+  const container = document.getElementById('tocLinks');
+  container.innerHTML = items.map(([id,label])=>
+    `<a href="#${id}" class="toc-link" data-id="${id}"><div class="toc-dot"></div>${label}</a>`
+  ).join('');
+}
+
+function switchTab(tab, btn){
+  document.querySelectorAll('.htab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.doc-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+tab).classList.add('active');
+  if(tab==='study'){
+    buildTOC(TOC_STUDY);
+    document.getElementById('tocTitle').textContent='فهرس الدراسة';
+  } else {
+    buildTOC(TOC_PLAN);
+    document.getElementById('tocTitle').textContent='فهرس الخطة';
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Active TOC on scroll
+function updateActiveTOC(){
+  const links = document.querySelectorAll('.toc-link');
+  let found = null;
+  links.forEach(link=>{
+    const el = document.getElementById(link.dataset.id);
+    if(el){
+      const rect = el.getBoundingClientRect();
+      if(rect.top <= 100) found = link;
+    }
+  });
+  links.forEach(l=>l.classList.remove('active'));
+  if(found) found.classList.add('active');
+}
+window.addEventListener('scroll', updateActiveTOC, {passive:true});
+
+// ── Build booking flow HTML
+const bookingFlow = document.querySelector('#s1-ui .phase-body');
+// (already rendered inline)
+
+// ── Init
+buildTOC(TOC_STUDY);
+</script>
+</body>
+</html>
